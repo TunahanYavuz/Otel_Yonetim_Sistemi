@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import java.lang.String?>
+<ScrollPane fitToWidth="true" styleClass="scroll-pane" stylesheets="@style.css"
+      xmlns="http://javafx.com/javafx/21.0.5" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ymt_odev.Controllers.CustomerManagementController">
+<VBox spacing="20" styleClass="dashboard-content">
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"/>
+    </padding>
+
+    <!-- Başlık -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Text text="👥" styleClass="hotel-icon" style="-fx-font-size: 32px;"/>
+        <Text text="Müşteri Yönetimi" styleClass="main-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="➕ Yeni Müşteri" styleClass="action-button" onAction="#addCustomer"/>
+        <Button text="🏠 Ana Menü" styleClass="action-button" onAction="#goToMainMenu"
+                style="-fx-background-color: linear-gradient(to bottom, #95a5a6, #7f8c8d);"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Arama ve Filtre -->
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="form-container">
+        <padding>
+            <Insets top="15" bottom="15" left="20" right="20"/>
+        </padding>
+
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Text text="🔍 Müşteri Ara:" styleClass="info-text"/>
+            <TextField fx:id="customerSearchField" promptText="Ad, e-posta veya TC ile arayın..."
+                       styleClass="modern-textfield"/>
+        </VBox>
+
+        <VBox spacing="5">
+            <Text text="💎 Sadakat Seviyesi:" styleClass="info-text"/>
+            <ComboBox prefWidth="150" promptText="Tümü">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Tümü"/>
+                        <String fx:value="Bronze"/>
+                        <String fx:value="Silver"/>
+                        <String fx:value="Gold"/>
+                        <String fx:value="Platinum"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+
+        <Button text="🔍 Ara" styleClass="action-button" onAction="#searchCustomers">
+            <VBox.margin>
+                <Insets top="20"/>
+            </VBox.margin>
+        </Button>
+    </HBox>
+
+    <!-- İstatistikler -->
+    <HBox spacing="20" alignment="CENTER">
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="👥" styleClass="stat-icon"/>
+            <Text text="Toplam Müşteri" styleClass="stat-title"/>
+            <Text fx:id="totalCustomersCount" text="0" styleClass="stat-number"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="⭐" styleClass="stat-icon"/>
+            <Text text="VIP Müşteri" styleClass="stat-title"/>
+            <Text text="0" styleClass="stat-number"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="📈" styleClass="stat-icon"/>
+            <Text text="Bu Ay Yeni" styleClass="stat-title"/>
+            <Text text="0" styleClass="stat-number"/>
+        </VBox>
+    </HBox>
+
+    <!-- Müşteri Listesi -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <Text text="📋 Müşteri Listesi" styleClass="section-title"/>
+
+        <TableView fx:id="customersTable" styleClass="modern-table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="customerIdColumn" text="ID" prefWidth="60"/>
+                <TableColumn fx:id="customerNameColumn" text="Ad Soyad" prefWidth="180"/>
+                <TableColumn fx:id="emailColumn" text="E-posta" prefWidth="200"/>
+                <TableColumn fx:id="phoneColumn" text="Telefon" prefWidth="130"/>
+                <TableColumn fx:id="tcColumn" text="TC Kimlik" prefWidth="120"/>
+                <TableColumn fx:id="loyaltyColumn" text="Sadakat" prefWidth="100"/>
+                <TableColumn fx:id="totalBookingsColumn" text="Toplam Rezervasyon" prefWidth="140"/>
+                <TableColumn fx:id="actionsColumn" text="İşlemler" prefWidth="150"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+</VBox>
+</ScrollPane>

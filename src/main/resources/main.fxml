@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.5"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ymt_odev.Controllers.MainController">
+    <!-- Ana Layout: BorderPane -->
+    <BorderPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <!-- Üst Menü Bar -->
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-menu-bar">
+                <padding>
+                    <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
+                </padding>
+
+                <!-- Logo ve Başlık -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Text styleClass="logo-icon" text="🏨" />
+                    <Text styleClass="app-title" text="Otel Yönetim Sistemi" />
+                </HBox>
+
+                <!-- Spacer -->
+                <Region HBox.hgrow="ALWAYS" />
+
+                <!-- Kullanıcı Bilgisi -->
+                <HBox alignment="CENTER_RIGHT" spacing="15">
+                    <Text fx:id="userInfoText" styleClass="user-info" text="👤 Kullanıcı Adı" />
+                    <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Çıkış" />
+                </HBox>
+            </HBox>
+        </top>
+
+        <!-- Sol Menü -->
+        <left>
+            <VBox prefWidth="250" spacing="5" styleClass="sidebar">
+                <padding>
+                    <Insets bottom="20.0" left="15.0" right="15.0" top="10.0" />
+                </padding>
+
+                <!-- Menü Başlığı -->
+                <Text styleClass="menu-title" text="📋 Ana Menü" />
+
+                <Separator />
+
+                <!-- Müşteri Menüleri -->
+                <VBox fx:id="customerMenu" spacing="7">
+                    <Text styleClass="menu-section" text="👤 Müşteri İşlemleri" />
+                    <Button maxWidth="Infinity" onAction="#showDashboard" styleClass="menu-button" text="🏠 Ana Sayfa" />
+                    <Button maxWidth="Infinity" onAction="#switchToRoomSearch" styleClass="menu-button" text="🔍 Oda Ara" />
+                    <Button maxWidth="Infinity" onAction="#showMyReservations" styleClass="menu-button" text="📅 Rezervasyonlarım" />
+                    <Button maxWidth="Infinity" onAction="#switchToProfile" styleClass="menu-button" text="👤 Profilim" />
+                    <Button maxWidth="Infinity" onAction="#showChangePassword" styleClass="menu-button" text="🔒 Şifre Değiştir" />
+                </VBox>
+
+                <Separator />
+
+                <!-- Personel Menüleri -->
+                <VBox fx:id="staffMenu" spacing="7">
+                    <Text styleClass="menu-section" text="👔 Personel İşlemleri" />
+                    <Button maxWidth="Infinity" onAction="#showStaffDashboard" styleClass="menu-button" text="📊 Dashboard" />
+                    <Button maxWidth="Infinity" onAction="#showCustomerManagement" styleClass="menu-button" text="👥 Müşteri Yönetimi" />
+                    <Button maxWidth="Infinity" onAction="#showRoomManagement" styleClass="menu-button" text="🛏️ Oda Yönetimi" />
+                    <Button maxWidth="Infinity" onAction="#switchToReservationManagement" styleClass="menu-button" text="📋 Rezervasyon Yönetimi" />
+                    <Button maxWidth="Infinity" onAction="#showCheckinCheckout" styleClass="menu-button" text="✅ Check-in/out" />
+                </VBox>
+
+                <Separator />
+
+                <!-- Admin Menüleri -->
+                <VBox fx:id="adminMenu" spacing="7">
+                    <Text styleClass="menu-section" text="🔑 Admin İşlemleri" />
+                    <Button maxWidth="Infinity" onAction="#showUserManagement" styleClass="menu-button" text="👥 Kullanıcı Yönetimi" />
+                    <Button maxWidth="Infinity" onAction="#showReports" styleClass="menu-button" text="📈 Raporlar" />
+                    <Button maxWidth="Infinity" onAction="#showSettings" styleClass="menu-button" text="⚙️ Sistem Ayarları" />
+                </VBox>
+
+            </VBox>
+        </left>
+
+        <!-- Merkezi İçerik Alanı -->
+        <center>
+            <!-- StackPane: Dinamik içerik yüklemek için -->
+            <StackPane fx:id="contentArea" styleClass="content-area"/>
+        </center>
+
+    </BorderPane>
+</AnchorPane>

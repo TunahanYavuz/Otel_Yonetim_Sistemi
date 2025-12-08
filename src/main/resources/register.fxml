@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="700.0" prefWidth="900.0" styleClass="main-container"
+            stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.5"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ymt_odev.Controllers.AuthController">
+
+    <!-- Ana Container -->
+    <ScrollPane fitToWidth="true" fitToHeight="true" AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <VBox alignment="CENTER" spacing="25" styleClass="register-container">
+            <padding>
+                <Insets top="50" bottom="50" left="80" right="80"/>
+            </padding>
+
+            <!-- Başlık -->
+            <VBox alignment="CENTER" spacing="10">
+                <Text text="📝" styleClass="register-icon" />
+                <Text text="Yeni Hesap Oluşturun" styleClass="main-title" />
+                <Text text="Bilgilerinizi güvenle kaydedin" styleClass="subtitle" />
+            </VBox>
+
+            <!-- Kayıt Formu -->
+            <VBox alignment="CENTER" spacing="20" styleClass="form-container" maxWidth="400">
+                <padding>
+                    <Insets top="40" bottom="40" left="50" right="50"/>
+                </padding>
+
+                <!-- Kişisel Bilgiler Başlığı -->
+                <Text text="👤 Kişisel Bilgiler" styleClass="section-title" />
+
+                <!-- İsim Soyisim -->
+                <HBox alignment="CENTER" spacing="10">
+                    <TextField fx:id="name" promptText="✏️ Adınız"
+                              styleClass="modern-textfield" prefWidth="180"/>
+                    <TextField fx:id="surname" promptText="✏️ Soyadınız"
+                              styleClass="modern-textfield" prefWidth="180"/>
+                </HBox>
+
+                <!-- İletişim Bilgileri -->
+                <TextField fx:id="email" promptText="📧 E-posta Adresi"
+                          styleClass="modern-textfield" maxWidth="370"/>
+                <TextField fx:id="phone" promptText="📱 Telefon Numarası"
+                          styleClass="modern-textfield" maxWidth="370"/>
+                <TextField fx:id="tcKimlik" promptText="🆔 TC Kimlik Numarası"
+                          styleClass="modern-textfield" maxWidth="370"/>
+
+                <!-- Güvenlik Bilgileri Başlığı -->
+                <Text text="🔒 Güvenlik Bilgileri" styleClass="section-title" />
+
+                <!-- Şifre Alanları -->
+                <PasswordField fx:id="re_password" promptText="🔑 Şifre (En az 6 karakter)"
+                              styleClass="modern-textfield" maxWidth="370"/>
+                <PasswordField fx:id="checkPassword" promptText="🔑 Şifre Tekrarı"
+                              styleClass="modern-textfield" maxWidth="370"/>
+
+                <!-- Şifre Güvenlik Bilgisi -->
+                <VBox alignment="CENTER" spacing="5">
+                    <Text text="Güçlü Şifre İçin:" styleClass="info-text" />
+                    <Text text="• En az 6 karakter • Büyük-küçük harf • Sayı kullanın"
+                          styleClass="info-detail" />
+                </VBox>
+
+                <!-- Gizlilik Sözleşmesi -->
+                <CheckBox text="Kullanım koşullarını ve gizlilik sözleşmesini kabul ediyorum"
+                         fx:id="agreementCheck" styleClass="agreement-checkbox" />
+            </VBox>
+
+            <!-- Butonlar -->
+            <HBox alignment="CENTER" spacing="20">
+                <Button text="🏠 Ana Sayfaya Dön" onAction="#switchLogin"
+                       styleClass="secondary-button" prefWidth="160"/>
+                <Button text="✅ Hesap Oluştur" onAction="#handleRegister"
+                       styleClass="primary-button" prefWidth="160"/>
+            </HBox>
+
+            <!-- Alt Bilgi -->
+            <VBox alignment="CENTER" spacing="5">
+                <Text text="Zaten hesabınız var mı?" styleClass="footer-text"/>
+                <Hyperlink text="Buradan giriş yapın" onAction="#switchLogin"
+                          styleClass="login-link"/>
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

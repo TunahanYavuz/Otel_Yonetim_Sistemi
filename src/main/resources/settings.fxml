@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<VBox spacing="20" styleClass="dashboard-content" stylesheets="@style.css"
+      xmlns="http://javafx.com/javafx/21.0.5" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ymt_odev.Controllers.SettingsController">
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"/>
+    </padding>
+
+    <!-- Başlık -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Text text="⚙️" styleClass="hotel-icon" style="-fx-font-size: 32px;"/>
+        <Text text="Sistem Ayarları" styleClass="main-title"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Ayar Kategorileri -->
+    <TabPane VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE" styleClass="modern-table">
+
+        <!-- Genel Ayarlar -->
+        <Tab text="🏨 Genel Ayarlar">
+            <ScrollPane fitToWidth="true">
+                <VBox spacing="20">
+                    <padding>
+                        <Insets top="20" bottom="20" left="25" right="25"/>
+                    </padding>
+
+                    <VBox spacing="15" styleClass="form-container">
+                        <padding>
+                            <Insets top="20" bottom="20" left="25" right="25"/>
+                        </padding>
+
+                        <Text text="🏨 Otel Bilgileri" styleClass="section-title"/>
+
+                        <VBox spacing="8">
+                            <Text text="Otel Adı:" styleClass="info-text"/>
+                            <TextField text="Grand Hotel" styleClass="modern-textfield"/>
+                        </VBox>
+
+                        <VBox spacing="8">
+                            <Text text="Adres:" styleClass="info-text"/>
+                            <TextArea text="İstanbul, Türkiye" prefHeight="80" wrapText="true"
+                                      styleClass="modern-textfield"/>
+                        </VBox>
+
+                        <HBox spacing="15">
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Text text="Telefon:" styleClass="info-text"/>
+                                <TextField text="+90 212 XXX XX XX" styleClass="modern-textfield"/>
+                            </VBox>
+
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Text text="E-posta:" styleClass="info-text"/>
+                                <TextField text="info@grandhotel.com" styleClass="modern-textfield"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="15" styleClass="form-container">
+                        <padding>
+                            <Insets top="20" bottom="20" left="25" right="25"/>
+                        </padding>
+
+                        <Text text="⏰ Zaman Ayarları" styleClass="section-title"/>
+
+                        <HBox spacing="15">
+                            <VBox spacing="8">
+                                <Text text="Check-in Saati:" styleClass="info-text"/>
+                                <ComboBox prefWidth="120">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="12:00"/>
+                                            <String fx:value="13:00"/>
+                                            <String fx:value="14:00"/>
+                                            <String fx:value="15:00"/>
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                            </VBox>
+
+                            <VBox spacing="8">
+                                <Text text="Check-out Saati:" styleClass="info-text"/>
+                                <ComboBox prefWidth="120">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="10:00"/>
+                                            <String fx:value="11:00"/>
+                                            <String fx:value="12:00"/>
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- Fiyatlandırma -->
+        <Tab text="💰 Fiyatlandırma">
+            <ScrollPane fitToWidth="true">
+                <VBox spacing="20">
+                    <padding>
+                        <Insets top="20" bottom="20" left="25" right="25"/>
+                    </padding>
+
+                    <VBox spacing="15" styleClass="form-container">
+                        <padding>
+                            <Insets top="20" bottom="20" left="25" right="25"/>
+                        </padding>
+
+                        <Text text="💵 Oda Fiyatları (₺/Gece)" styleClass="section-title"/>
+
+                        <GridPane hgap="15" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="50"/>
+                            </columnConstraints>
+
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Text text="Standart Oda:" styleClass="info-text"/>
+                                <TextField fx:id="priceStandart" text="500" styleClass="modern-textfield"/>
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Text text="Deluxe Oda:" styleClass="info-text"/>
+                                <TextField fx:id="priceDeluxe" text="800" styleClass="modern-textfield"/>
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Text text="Suite:" styleClass="info-text"/>
+                                <TextField fx:id="priceSuite" text="1200" styleClass="modern-textfield"/>
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Text text="Aile:" styleClass="info-text"/>
+                                <TextField fx:id="priceAile" text="1000" styleClass="modern-textfield"/>
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                <Text text="Penthouse:" styleClass="info-text"/>
+                                <TextField fx:id="pricePenthouse" text="2500" styleClass="modern-textfield"/>
+                            </VBox>
+                        </GridPane>
+                    </VBox>
+
+                    <VBox spacing="15" styleClass="form-container">
+                        <padding>
+                            <Insets top="20" bottom="20" left="25" right="25"/>
+                        </padding>
+
+                        <Text text="🎁 Ek Özellik Fiyatları (₺/Gece)" styleClass="section-title"/>
+
+                        <GridPane hgap="15" vgap="12">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50"/>
+                                <ColumnConstraints percentWidth="50"/>
+                            </columnConstraints>
+
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Text text="Deniz Manzarası:" styleClass="info-text"/>
+                                <TextField fx:id="priceSeaView" text="150" styleClass="modern-textfield"/>
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Text text="Balkon:" styleClass="info-text"/>
+                                <TextField fx:id="priceBalcony" text="100" styleClass="modern-textfield"/>
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Text text="Jakuzi:" styleClass="info-text"/>
+                                <TextField fx:id="priceJacuzzi" text="200" styleClass="modern-textfield"/>
+                            </VBox>
+
+                            <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Text text="Mutfak:" styleClass="info-text"/>
+                                <TextField fx:id="priceKitchen" text="120" styleClass="modern-textfield"/>
+                            </VBox>
+                        </GridPane>
+                    </VBox>
+
+                    <HBox spacing="15" alignment="CENTER">
+                        <Button text="💾 Fiyatları Kaydet" styleClass="primary-button" onAction="#savePricingConfig"/>
+                        <Button text="🔄 Tüm Oda Fiyatlarını Güncelle" styleClass="action-button" onAction="#updateAllRoomPrices"/>
+                    </HBox>
+                </VBox>
+            </ScrollPane>
+        </Tab>
+
+        <!-- Veritabanı -->
+        <Tab text="🗄️ Veritabanı">
+            <VBox spacing="20" alignment="CENTER">
+                <padding>
+                    <Insets top="30" bottom="30" left="30" right="30"/>
+                </padding>
+
+                <VBox spacing="15" styleClass="form-container" maxWidth="600">
+                    <padding>
+                        <Insets top="25" bottom="25" left="30" right="30"/>
+                    </padding>
+
+                    <Text text="🗄️ Veritabanı Bağlantısı" styleClass="section-title"/>
+
+                    <HBox spacing="15">
+                        <VBox spacing="8" HBox.hgrow="ALWAYS">
+                            <Text text="Sunucu:" styleClass="info-text"/>
+                            <TextField fx:id="dbServerField" text="localhost" styleClass="modern-textfield"/>
+                        </VBox>
+
+                        <VBox spacing="8">
+                            <Text text="Port:" styleClass="info-text"/>
+                            <TextField fx:id="dbPortField" text="1433" prefWidth="100" styleClass="modern-textfield"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="8">
+                        <Text text="Veritabanı Adı:" styleClass="info-text"/>
+                        <TextField fx:id="dbNameField" text="otel_db" styleClass="modern-textfield"/>
+                    </VBox>
+
+                    <HBox spacing="15">
+                        <VBox spacing="8" HBox.hgrow="ALWAYS">
+                            <Text text="Kullanıcı Adı:" styleClass="info-text"/>
+                            <TextField fx:id="dbUsernameField" text="otel" styleClass="modern-textfield"/>
+                        </VBox>
+
+                        <VBox spacing="8" HBox.hgrow="ALWAYS">
+                            <Text text="Şifre:" styleClass="info-text"/>
+                            <PasswordField fx:id="dbPasswordField" styleClass="modern-textfield"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="15" alignment="CENTER">
+                        <Button text="🔄 Bağlantıyı Test Et" styleClass="action-button" onAction="#testConnection"/>
+                        <Button text="💾 Kaydet" styleClass="primary-button" onAction="#saveDbConfig"/>
+                    </HBox>
+                </VBox>
+
+                <VBox spacing="15" styleClass="stat-card" maxWidth="600">
+                    <padding>
+                        <Insets top="20" bottom="20" left="30" right="30"/>
+                    </padding>
+
+                    <Text text="⚠️ Tehlikeli Bölge" styleClass="section-title"
+                          style="-fx-fill: #e74c3c;"/>
+                    <Text text="Yedekleme ve veritabanı işlemleri" styleClass="info-detail"/>
+
+                    <HBox spacing="15" alignment="CENTER">
+                        <Button text="💾 Yedek Al" styleClass="secondary-button" onAction="#backupDatabase"/>
+                        <Button text="📥 Yedek Yükle" styleClass="secondary-button" onAction="#restoreBackup"/>
+                        <Button text="🗑️ Veritabanını Temizle" styleClass="action-button"
+                                style="-fx-background-color: linear-gradient(to bottom, #e74c3c, #c0392b);" onAction="#purgeDatabase"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </Tab>
+
+        <!-- Sistem Bilgisi -->
+        <Tab text="ℹ️ Sistem Bilgisi">
+            <VBox spacing="20" alignment="CENTER">
+                <padding>
+                    <Insets top="30" bottom="30" left="30" right="30"/>
+                </padding>
+
+                <VBox spacing="15" styleClass="form-container" alignment="CENTER" maxWidth="500">
+                    <padding>
+                        <Insets top="30" bottom="30" left="40" right="40"/>
+                    </padding>
+
+                    <Text text="🏨" styleClass="hotel-icon"/>
+                    <Text text="Otel Yönetim Sistemi" styleClass="main-title"/>
+                    <Text text="Versiyon 1.0.0" styleClass="subtitle"/>
+
+                    <Separator prefWidth="300"/>
+
+                    <VBox spacing="8" alignment="CENTER">
+                        <Text text="Geliştirilme Tarihi: 2025" styleClass="info-detail"/>
+                        <Text text="JavaFX ile geliştirilmiştir" styleClass="info-detail"/>
+                        <Text text="© 2025 Tüm hakları saklıdır" styleClass="info-detail"/>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </Tab>
+
+    </TabPane>
+
+    <!-- Kaydet Butonu -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="💾 Değişiklikleri Kaydet" styleClass="primary-button" prefWidth="200" onAction="#saveChanges"/>
+        <Button text="↩️ Varsayılana Dön" styleClass="secondary-button" prefWidth="180" onAction="#revertDefaults"/>
+    </HBox>
+
+</VBox>
