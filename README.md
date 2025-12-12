@@ -47,7 +47,7 @@ A comprehensive hotel management system built with JavaFX and MS SQL Server. Thi
 
 ## 🛠️ Technology Stack
 
-- **Java 21/23**: Core programming language with preview features enabled (configured for Java 23 compilation)
+- **Java 23**: Core programming language with preview features enabled
 - **JavaFX 21.0.5**: Desktop GUI framework
 - **Maven**: Build and dependency management
 - **MS SQL Server**: Database management system
@@ -89,7 +89,7 @@ Otel_Yonetim_Sistemi/
 
 ## 📋 Prerequisites
 
-- **Java Development Kit (JDK) 21 or higher** (JDK 23 recommended for full compatibility with compiler settings)
+- **Java Development Kit (JDK) 23** (required for preview features and compilation settings)
 - **Apache Maven 3.6+**
 - **MS SQL Server** (local or remote instance)
 - **JavaFX SDK 21.0.5** (automatically managed by Maven)
