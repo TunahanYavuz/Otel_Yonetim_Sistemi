@@ -1,16 +1,15 @@
 {
   "roomTypePrices": {
+    "Suite": 1200.0,
+    "Penthouse": 2500.0,
     "Standart": 500.0,
     "Deluxe": 800.0,
-    "Suite": 1200.0,
-    "Aile": 1000.0,
-    "Penthouse": 2500.0
+    "Aile": 1000.0
   },
   "featurePrices": {
-    "seaView": 150.0,
-    "balcony": 100.0,
-    "jacuzzi": 200.0,
-    "kitchen": 120.0
+    "seaView": 250.0,
+    "jacuzzi": 600.0,
+    "kitchen": 120.0,
+    "balcony": 200.0
   }
 }
-

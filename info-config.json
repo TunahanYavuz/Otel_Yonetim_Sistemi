@@ -1,6 +1,6 @@
 {
-  "hotel_name": "Hamsi Hotel",
-  "hotel_address": "Kırklareli/Türkiye",
-  "hotel_phone": "+90 (212) 555-0000",
-  "hotel_email": "hamsikirklareli@hotel.com"
+  "hotel_name": "YOUR_HOTEL_NAME_HERE",
+  "hotel_address": "YOUR_ADDRESS_HERE",
+  "hotel_phone": "YOUR_PHONE_NUMBER_HERE",
+  "hotel_email": "YOUR_EMAIL_HERE"
 }

@@ -1,6 +1,6 @@
 {
-  "password": "123456",
-  "username": "otel",
+  "password": "YOUR_PASSWORD_HERE",
+  "username": "YOUR_USERNAME_HERE",
   "databaseName": "otel_db",
   "port": "1433",
   "server": "localhost"
