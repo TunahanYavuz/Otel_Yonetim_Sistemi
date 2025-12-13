@@ -6,6 +6,7 @@ import ymt_odev.Database.DBDataUpdater;
 import ymt_odev.Database.DatabaseManager;
 import ymt_odev.Domain.Reservation;
 import ymt_odev.Patterns.NotificationManager;
+import ymt_odev.ReservationState;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -160,7 +161,7 @@ public class ReservationService {
         String checkOutTime = LocalDateTime.now().format(formatter);
 
         String[] columns = new String[]{"state", "checkOutTime"};
-        String[] values = new String[]{"CHECKED_OUT", checkOutTime};
+        String[] values = new String[]{ReservationState.CHECKED_OUT.toString(), checkOutTime};
         String[] whereClause = new String[]{"id"};
         Object[] whereParams = new Object[]{reservationId};
 
@@ -193,7 +194,6 @@ public class ReservationService {
         } catch (SQLException e) {
             System.err.println("Rezervasyon listesi hatası: " + e.getMessage());
         }
-
         return reservations;
     }
 
@@ -215,6 +215,25 @@ public class ReservationService {
                 rs.close();
                 return reservation;
             }
+
+        } catch (SQLException e) {
+            System.err.println("Rezervasyon arama hatası: " + e.getMessage());
+        }
+
+        return null;
+    }
+    public static List<Reservation> getReservationCustomerName(String customerName){
+        DatabaseManager selector = new DBDataSelection();
+        List<Reservation> reservations = new ArrayList<>();
+        try {
+
+            ResultSet rs = selector.selectDataWithProximity("Reservations", "name", customerName);
+
+            while (rs != null && rs.next()) {
+                Reservation reservation = mapResultSetToReservation(rs);
+                reservations.add(reservation);
+            }
+            return reservations;
 
         } catch (SQLException e) {
             System.err.println("Rezervasyon arama hatası: " + e.getMessage());

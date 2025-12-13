@@ -18,8 +18,7 @@ public class Main extends Application {
         primaryStage.setTitle("🏨 Otel Yönetim Sistemi - Giriş");
         primaryStage.setScene(scene);
         primaryStage.setResizable(true);
-        primaryStage.setMinWidth(800);
-        primaryStage.setMinHeight(600);
+        primaryStage.setFullScreen(true);
 
         // Merkezi konumlandır
         primaryStage.centerOnScreen();

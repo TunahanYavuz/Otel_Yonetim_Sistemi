@@ -3,16 +3,12 @@ package ymt_odev.Patterns;
 import ymt_odev.Database.DBDataInsertion;
 import ymt_odev.Database.DatabaseManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Observer Pattern - Bildirim yöneticisi
- * Rezervasyon, oda durumu vb. değişikliklerde ilgilenen taraflara bildirim gönderir
+ * Bildirim yöneticisi - Singleton Pattern
+ * Rezervasyon, oda durumu vb. değişikliklerde bildirim gönderir
  */
 public class NotificationManager {
     private static NotificationManager instance;
-    private final List<NotificationObserver> observers = new ArrayList<>();
 
     private NotificationManager() {}
 
@@ -21,31 +17,6 @@ public class NotificationManager {
             instance = new NotificationManager();
         }
         return instance;
-    }
-
-    /**
-     * Observer ekler
-     */
-    public void addObserver(NotificationObserver observer) {
-        if (!observers.contains(observer)) {
-            observers.add(observer);
-        }
-    }
-
-    /**
-     * Observer kaldırır
-     */
-    public void removeObserver(NotificationObserver observer) {
-        observers.remove(observer);
-    }
-
-    /**
-     * Tüm observer'lara bildirim gönderir
-     */
-    public void notifyObservers(String title, String message, String type) {
-        for (NotificationObserver observer : observers) {
-            observer.update(title, message, type);
-        }
     }
 
     /**
@@ -64,9 +35,6 @@ public class NotificationManager {
         };
 
         inserter.insertData("Notifications", columns, values);
-
-        // Observer'lara da bildir
-        notifyObservers(title, message, notificationType);
     }
 
     /**
@@ -117,4 +85,3 @@ public class NotificationManager {
         );
     }
 }
-

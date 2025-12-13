@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import ymt_odev.AlertManager;
+import ymt_odev.ReservationState;
 import ymt_odev.Services.CustomerService;
 import ymt_odev.Services.ReservationService;
 import ymt_odev.Services.RoomService;
@@ -115,7 +116,8 @@ public class ReportsController extends BaseController {
         int customerCount = CustomerService.getAllCustomers().size();
 
         long activeReservations = reservations.stream()
-                .filter(r -> "CONFIRMED".equals(r.getState()) || "CHECKED_IN".equals(r.getState()))
+                .filter(r -> ReservationState.CONFIRMED.toString().equals(r.getState()) ||
+                            ReservationState.CHECKED_IN.toString().equals(r.getState()))
                 .count();
 
         long availableRooms = rooms.stream().filter(Room::isAvailable).count();

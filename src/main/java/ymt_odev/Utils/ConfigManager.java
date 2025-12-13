@@ -16,9 +16,25 @@ public class ConfigManager {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private static final String DB_CONFIG_FILE = "db-config.json";
     private static final String PRICING_CONFIG_FILE = "pricing-config.json";
+    private static final String INFO_CONFIG_FILE = "info-config.json";
 
     private static DbConfig cachedDbConfig = null;
     private static PricingConfig cachedPricingConfig = null;
+    private static InfoConfig cachedInfoConfig = null;
+
+
+    public static class InfoConfig{
+        public String hotel_name;
+        public String hotel_address;
+        public String hotel_phone;
+        public String hotel_email;
+        public InfoConfig(){
+            hotel_name = "Hamsi Hotel";
+            hotel_address = "Kırklareli/Türkiye";
+            hotel_phone = "+90 (212) 555-0000";
+            hotel_email = "hamsikirklareli@hotel.com";
+        }
+    }
 
     /**
      * Veritabanı konfigürasyon modeli
@@ -108,6 +124,42 @@ public class ConfigManager {
         return Paths.get(System.getProperty("user.dir"), fileName);
     }
 
+    public static InfoConfig loadInfoConfig(){
+        if (cachedInfoConfig != null) {
+            return cachedInfoConfig;
+        }
+        Path configPath = getConfigPath(INFO_CONFIG_FILE);
+        try {
+            if (Files.exists(configPath)){
+                String json = Files.readString(configPath);
+                cachedInfoConfig = gson.fromJson(json, InfoConfig.class);
+                System.out.println("✅ Bilgi konfigürasyonu yüklendi: " + configPath);
+            }else {
+                cachedInfoConfig = new InfoConfig();
+                saveInfoConfig(cachedInfoConfig);
+                System.out.println("📝 Varsayılan bilgi konfigürasyonu oluşturuldu: " + configPath);
+            }
+        }catch (IOException e){
+            System.err.println("❌ Bilgi konfigürasyonu okunamadı: " + e.getMessage());
+            cachedInfoConfig = new InfoConfig();
+        }
+        return cachedInfoConfig;
+    }
+
+    public static boolean saveInfoConfig(InfoConfig config){
+        Path configPath = getConfigPath(INFO_CONFIG_FILE);
+        try {
+            String json = gson.toJson(config);
+            Files.writeString(configPath, json);
+            System.out.println("✅ Bilgi konfigürasyonu kaydedildi: " + configPath);
+            return true;
+        }catch (IOException e){
+            System.err.println("❌ Bilgi konfigürasyonu kaydedilemedi: " + e.getMessage());
+            return false;
+        }
+    }
+
+
     /**
      * Veritabanı konfigürasyonunu okur
      */
@@ -146,7 +198,6 @@ public class ConfigManager {
         try {
             String json = gson.toJson(config);
             Files.writeString(configPath, json);
-            cachedDbConfig = config;
             System.out.println("✅ Veritabanı konfigürasyonu kaydedildi: " + configPath);
             return true;
         } catch (IOException e) {
@@ -154,6 +205,8 @@ public class ConfigManager {
             return false;
         }
     }
+
+
 
     /**
      * Fiyatlandırma konfigürasyonunu okur

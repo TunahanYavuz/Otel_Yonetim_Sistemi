@@ -3,6 +3,7 @@ package ymt_odev.Services;
 import ymt_odev.Database.DBDataInsertion;
 import ymt_odev.Database.DBDataSelection;
 import ymt_odev.Database.DatabaseManager;
+import ymt_odev.LoyaltyLevel;
 import ymt_odev.Users.Customer;
 
 import java.sql.ResultSet;
@@ -108,7 +109,7 @@ public class CustomerService {
         };
 
         Object[] values = new Object[]{
-                firstName, lastName, email, phone, tcKimlik, password, "Bronze", 0
+                firstName, lastName, email, phone, tcKimlik, password, LoyaltyLevel.BRONZE.toString(), 0
         };
 
         return inserter.insertData("Customers", columns, values);

@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
+import ymt_odev.ReservationState;
 import ymt_odev.Services.CustomerService;
 import ymt_odev.Services.ReservationService;
 import ymt_odev.Services.RoomService;
@@ -57,7 +58,8 @@ public class DashboardController extends BaseController {
         if (activeReservationsCount != null) {
             activeReservationsCount.setText(String.valueOf(
                     ReservationService.getAllReservations().stream()
-                            .filter(r -> "CONFIRMED".equals(r.getState()) || "CHECKED_IN".equals(r.getState()))
+                            .filter(r -> ReservationState.CONFIRMED.toString().equals(r.getState()) ||
+                                        ReservationState.CHECKED_IN.toString().equals(r.getState()))
                             .count()
             ));
         }

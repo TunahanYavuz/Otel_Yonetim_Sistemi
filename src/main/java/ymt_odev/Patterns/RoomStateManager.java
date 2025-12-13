@@ -10,20 +10,14 @@ public class RoomStateManager {
      * Factory method - Durum adına göre uygun RoomState nesnesi döndürür
      */
     public static RoomState createState(String stateName) {
-        switch (stateName.toUpperCase()) {
-            case "AVAILABLE":
-                return new AvailableRoomState();
-            case "RESERVED":
-                return new ReservedRoomState();
-            case "OCCUPIED":
-                return new OccupiedRoomState();
-            case "CLEANING":
-                return new CleaningRoomState();
-            case "MAINTENANCE":
-                return new MaintenanceRoomState();
-            default:
-                return new AvailableRoomState();
-        }
+        ymt_odev.RoomState roomState = ymt_odev.RoomState.fromString(stateName);
+        return switch (roomState) {
+            case RESERVED -> new ReservedRoomState();
+            case OCCUPIED -> new OccupiedRoomState();
+            case CLEANING -> new CleaningRoomState();
+            case MAINTENANCE -> new MaintenanceRoomState();
+            default -> new AvailableRoomState();
+        };
     }
 
     /**

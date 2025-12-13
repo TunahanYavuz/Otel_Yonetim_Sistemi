@@ -6,6 +6,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import ymt_odev.AlertManager;
 import ymt_odev.Domain.Room;
+import ymt_odev.Patterns.PaymentProcessor;
 import ymt_odev.Services.ReservationService;
 import ymt_odev.Services.RoomService;
 
@@ -296,6 +297,15 @@ public class RoomSearchController extends BaseController {
                     "Eksik Bilgi",
                     ""
             );
+            return;
+        }
+        PaymentProcessor paymentProcessor = new PaymentProcessor();
+        paymentProcessor.setPaymentStrategy(PaymentProcessor.createPaymentStrategy(paymentMethod.toLowerCase()));
+        if(paymentProcessor.processPayment(roomToBook.getId(), roomToBook.getPricePerNight(), SessionManager.getUser().getEmail())){
+            AlertManager.Alert(Alert.AlertType.WARNING,
+                    "Ödeme Gerçekleştirelemedi",
+                    "Ödeme Başarısız!",
+                    "Lütfen Tekrar Deneyiniz");
             return;
         }
 

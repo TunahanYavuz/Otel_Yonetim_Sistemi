@@ -24,6 +24,7 @@ public class CustomerManagementController extends BaseController {
     @FXML private TableColumn<Customer, Integer> totalBookingsColumn;
     @FXML private TableColumn<Customer, Void> actionsColumn;
     @FXML private Text totalCustomersCount;
+    @FXML private ComboBox<String> loyaltyBox;
 
     @Override
     protected void initialize() {
@@ -163,13 +164,20 @@ public class CustomerManagementController extends BaseController {
     @FXML
     private void searchCustomers() {
         String searchTerm = customerSearchField != null ? customerSearchField.getText() : "";
-
+        List<Customer> customers;
         if (searchTerm.isEmpty()) {
-            loadAllCustomers();
-            return;
+            customers = CustomerService.getAllCustomers();
+        }else {
+            customers = CustomerService.searchCustomers(searchTerm);
         }
-
-        List<Customer> customers = CustomerService.searchCustomers(searchTerm);
+        if (loyaltyBox != null && loyaltyBox.getValue() != null) {
+            String selectedLoyalty = loyaltyBox.getValue();
+            if (!selectedLoyalty.equals("Tümü")) {
+                customers = customers.stream()
+                        .filter(c -> c.getLoyaltyLevel().equals(selectedLoyalty))
+                        .toList();
+            }
+        }
 
         if (customersTable != null) {
             customersTable.getItems().clear();

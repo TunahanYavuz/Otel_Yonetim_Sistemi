@@ -6,26 +6,21 @@ import ymt_odev.AlertManager;
 import ymt_odev.Database.DatabaseConnection;
 import ymt_odev.Database.DBDataSelection;
 import ymt_odev.Database.DBDataUpdater;
-import ymt_odev.Domain.Room;
-import ymt_odev.Services.RoomService;
+import ymt_odev.Utils.ConfigManager.*;
 import ymt_odev.Utils.ConfigManager;
-import ymt_odev.Utils.ConfigManager.DbConfig;
-import ymt_odev.Utils.ConfigManager.PricingConfig;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 public class SettingsController extends BaseController {
 
     // Genel Ayarlar
     @FXML private TextField hotelNameField;
-    @FXML private TextField hotelAddressField;
+    @FXML private TextArea hotelAddressField;
     @FXML private TextField hotelPhoneField;
-    @FXML private CheckBox emailNotificationCheck;
-    @FXML private CheckBox smsNotificationCheck;
+    @FXML private TextField hotelEmailField;
+
 
     // Veritabanı Ayarları
     @FXML private TextField dbServerField;
@@ -56,16 +51,13 @@ public class SettingsController extends BaseController {
     }
 
     private void loadSettings() {
-        // Otel ayarlarını yükle (varsayılan değerler)
-        if (hotelNameField != null) {
-            hotelNameField.setText("Otel Yönetim Sistemi");
-        }
-        if (hotelAddressField != null) {
-            hotelAddressField.setText("İstanbul, Türkiye");
-        }
-        if (hotelPhoneField != null) {
-            hotelPhoneField.setText("+90 (212) 555-0000");
-        }
+
+        InfoConfig config = ConfigManager.loadInfoConfig();
+        if(hotelNameField != null) hotelNameField.setText(config.hotel_name);
+        if(hotelAddressField != null) hotelAddressField.setText(config.hotel_address);
+        if(hotelPhoneField != null) hotelPhoneField.setText(config.hotel_phone);
+        if(hotelEmailField != null) hotelEmailField.setText(config.hotel_email);
+
     }
 
     /**
@@ -318,31 +310,4 @@ public class SettingsController extends BaseController {
         }
     }
 
-    @FXML
-    private void backupDatabase() {
-        AlertManager.Alert(Alert.AlertType.INFORMATION,
-                "Veritabanı yedekleme özelliği yakında eklenecek!", "Bilgi", "");
-    }
-
-    @FXML
-    private void restoreBackup() {
-        AlertManager.Alert(Alert.AlertType.INFORMATION,
-                "Veritabanı geri yükleme özelliği yakında eklenecek!", "Bilgi", "");
-    }
-
-    @FXML
-    private void purgeDatabase() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Veritabanı Temizleme");
-        alert.setHeaderText("DİKKAT!");
-        alert.setContentText("Tüm veriler silinecek. Devam etmek istediğinize emin misiniz?");
-
-        alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                AlertManager.Alert(Alert.AlertType.INFORMATION,
-                        "Veritabanı temizleme özelliği güvenlik nedeniyle devre dışı!",
-                        "Bilgi", "");
-            }
-        });
-    }
 }

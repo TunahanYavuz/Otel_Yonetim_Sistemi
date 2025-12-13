@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="800.0" prefWidth="1200.0" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.5" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ymt_odev.Controllers.ReservationsController">
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ymt_odev.Controllers.ReservationsController">
 
     <BorderPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
@@ -137,9 +137,9 @@
                     <Insets bottom="10" left="30" right="30" top="10" />
                 </padding>
 
-                <Text fx:id="reservationCountText" styleClass="status-text" text="Toplam 47 rezervasyon" />
+                <Text fx:id="reservationCountText" styleClass="status-text" />
                 <Separator orientation="VERTICAL" />
-                <Text fx:id="selectedReservationText" styleClass="status-text" text="Seçili: Rezervasyon #HTL123456789" />
+                <Text fx:id="selectedReservationText" styleClass="status-text" />
 
                 <Region HBox.hgrow="ALWAYS" />
 

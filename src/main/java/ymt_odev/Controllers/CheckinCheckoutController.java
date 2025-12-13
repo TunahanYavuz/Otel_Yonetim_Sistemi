@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import ymt_odev.AlertManager;
 import ymt_odev.Domain.Reservation;
+import ymt_odev.RoomState;
 import ymt_odev.Services.ReservationService;
 import ymt_odev.Patterns.RoomStateManager;
 
@@ -112,7 +113,7 @@ public class CheckinCheckoutController extends BaseController {
 
         if (success) {
             // Oda durumunu güncelle
-            RoomStateManager.changeRoomState(currentReservation.getRoomId(), "CLEANING");
+            RoomStateManager.changeRoomState(currentReservation.getRoomId(), RoomState.CLEANING.toString());
 
             AlertManager.Alert(Alert.AlertType.INFORMATION,
                     "Check-out işlemi başarılı!", "Başarılı", "");

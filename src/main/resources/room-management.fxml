@@ -98,7 +98,7 @@
             </padding>
             <Text text="🛏️" styleClass="stat-icon"/>
             <Text text="Toplam Oda" styleClass="stat-title"/>
-            <Text text="120" styleClass="stat-number"/>
+            <Text fx:id="totalRoomsCount" text="0" styleClass="stat-number"/>
         </VBox>
 
         <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
@@ -107,7 +107,7 @@
             </padding>
             <Text text="✅" styleClass="stat-icon"/>
             <Text text="Müsait Oda" styleClass="stat-title"/>
-            <Text fx:id="availableRoomsCount" text="45" styleClass="stat-number"/>
+            <Text fx:id="availableRoomsCount" text="0" styleClass="stat-number"/>
         </VBox>
 
         <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
@@ -116,7 +116,7 @@
             </padding>
             <Text text="🧹" styleClass="stat-icon"/>
             <Text text="Temizlikte" styleClass="stat-title"/>
-            <Text text="8" styleClass="stat-number"/>
+            <Text fx:id="cleaningRoomsCount" text="0" styleClass="stat-number"/>
         </VBox>
 
         <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
@@ -125,7 +125,7 @@
             </padding>
             <Text text="🔧" styleClass="stat-icon"/>
             <Text text="Bakımda" styleClass="stat-title"/>
-            <Text text="3" styleClass="stat-number"/>
+            <Text fx:id="maintenanceRoomsCount" text="0" styleClass="stat-number"/>
         </VBox>
     </HBox>
 

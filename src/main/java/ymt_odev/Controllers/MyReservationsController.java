@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import ymt_odev.AlertManager;
 import ymt_odev.Domain.Reservation;
+import ymt_odev.ReservationState;
 import ymt_odev.Services.ReservationService;
 import ymt_odev.Users.Customer;
 
@@ -224,11 +225,11 @@ public class MyReservationsController extends BaseController {
         String statusFilter = reservationStatusFilter != null ? reservationStatusFilter.getValue() : "Tümü";
         if (statusFilter != null && !"Tümü".equals(statusFilter)) {
             String stateCode = switch (statusFilter) {
-                case "Beklemede" -> "PENDING";
-                case "Onaylandı" -> "CONFIRMED";
-                case "Giriş Yapıldı" -> "CHECKED_IN";
-                case "Tamamlandı" -> "CHECKED_OUT";
-                case "İptal Edildi" -> "CANCELLED";
+                case "Beklemede" -> ReservationState.PENDING.toString();
+                case "Onaylandı" -> ReservationState.CONFIRMED.toString();
+                case "Giriş Yapıldı" -> ReservationState.CHECKED_IN.toString();
+                case "Tamamlandı" -> ReservationState.CHECKED_OUT.toString();
+                case "İptal Edildi" -> ReservationState.CANCELLED.toString();
                 default -> null;
             };
             if (stateCode != null) {

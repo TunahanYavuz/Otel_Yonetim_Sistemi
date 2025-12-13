@@ -7,6 +7,7 @@ import ymt_odev.AlertManager;
 import ymt_odev.Database.DBDataInsertion;
 import ymt_odev.Database.DBDataSelection;
 import ymt_odev.Database.DatabaseManager;
+import ymt_odev.LoyaltyLevel;
 import ymt_odev.Users.Admin;
 import ymt_odev.Users.Customer;
 import ymt_odev.Users.Staff;
@@ -77,16 +78,22 @@ public class AuthController extends BaseController {
         }
 
         DatabaseManager insertion = new DBDataInsertion();
-        boolean inserted = insertion.insertHotelGuest(
+
+        String[] columns = new String[]{
+                "name", "surname", "email", "phone", "tcKimlik", "password", "loyaltyLevel", "totalBookings"
+        };
+        Object[] values = new Object[]{
                 name.getText(),
                 surname.getText(),
-                phone.getText(),
                 email.getText(),
+                phone.getText(),
                 tcKimlik.getText(),
                 re_password.getText(),
-                "Bronze",
+                LoyaltyLevel.BRONZE.toString(),
                 0
-        );
+        };
+
+        boolean inserted = insertion.insertData("Customers", columns, values);
 
         if (inserted) {
             SceneController.switchScene("/login.fxml", "🏨 Otel Yönetim Sistemi - Giriş");

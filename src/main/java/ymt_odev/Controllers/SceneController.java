@@ -21,11 +21,13 @@ public class SceneController {
             double currentHeight = primaryStage.getScene().getHeight();
             double currentWidth = primaryStage.getScene().getWidth();
             boolean maximized = primaryStage.isMaximized();
+            boolean fullscreen = primaryStage.isFullScreen();
             Parent root = FXMLLoader.load(SceneController.class.getResource(fxmlFile));
             Scene scene = new Scene(root, currentWidth, currentHeight);
             primaryStage.setTitle(title);
             primaryStage.setScene(scene);
             primaryStage.setMaximized(maximized);
+            primaryStage.setFullScreen(fullscreen);
 
         } catch (Exception e) {
             e.printStackTrace();

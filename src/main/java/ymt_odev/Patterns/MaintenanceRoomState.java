@@ -8,17 +8,17 @@ import ymt_odev.Domain.Room;
 public class MaintenanceRoomState implements RoomState {
     @Override
     public void handle(Room room) {
-        room.setState("MAINTENANCE");
+        room.setState(ymt_odev.RoomState.MAINTENANCE.toString());
     }
 
     @Override
     public String getStateName() {
-        return "MAINTENANCE";
+        return ymt_odev.RoomState.MAINTENANCE.toString();
     }
 
     @Override
     public boolean canBeReserved() {
-        return false;
+        return ymt_odev.RoomState.MAINTENANCE.canBeReserved();
     }
 }
 

@@ -6,9 +6,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import ymt_odev.AlertManager;
 import ymt_odev.Domain.Reservation;
+import ymt_odev.ReservationState;
+import ymt_odev.RoomState;
 import ymt_odev.Services.ReservationService;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ReservationsController extends BaseController {
 
@@ -42,6 +45,8 @@ public class ReservationsController extends BaseController {
     @FXML private javafx.scene.control.Button checkOutButton;
     @FXML private javafx.scene.control.Button cancelButton;
     @FXML private javafx.scene.control.Button editButton;
+    @FXML private javafx.scene.text.Text reservationCountText;
+    @FXML private javafx.scene.text.Text selectedReservationText;
 
     private Reservation selectedReservation;
 
@@ -118,6 +123,7 @@ public class ReservationsController extends BaseController {
     private void selectReservation(Reservation reservation) {
         selectedReservation = reservation;
         showReservationDetails(reservation);
+        selectedReservationText.setText("Seçili Rezervasyon: " + selectedReservation.getConfirmationCode() + " - " + selectedReservation.getState());
     }
 
     private void doCheckIn(Reservation reservation) {
@@ -126,7 +132,7 @@ public class ReservationsController extends BaseController {
         boolean success = ReservationService.checkIn(reservation.getId());
 
         if (success) {
-            ymt_odev.Patterns.RoomStateManager.changeRoomState(reservation.getRoomId(), "OCCUPIED");
+            ymt_odev.Patterns.RoomStateManager.changeRoomState(reservation.getRoomId(), RoomState.OCCUPIED.toString());
             AlertManager.Alert(Alert.AlertType.INFORMATION, "Check-in işlemi tamamlandı!", "Başarılı", "");
             loadAllReservations();
         } else {
@@ -140,7 +146,7 @@ public class ReservationsController extends BaseController {
         boolean success = ReservationService.checkOut(reservation.getId());
 
         if (success) {
-            ymt_odev.Patterns.RoomStateManager.changeRoomState(reservation.getRoomId(), "CLEANING");
+            ymt_odev.Patterns.RoomStateManager.changeRoomState(reservation.getRoomId(), RoomState.CLEANING.toString());
             AlertManager.Alert(Alert.AlertType.INFORMATION, "Check-out işlemi tamamlandı!", "Başarılı", "");
             loadAllReservations();
         } else {
@@ -155,25 +161,12 @@ public class ReservationsController extends BaseController {
             reservationsTable.getItems().clear();
             reservationsTable.getItems().addAll(reservations);
         }
+        reservationCountText.setText("Toplam: " + reservations.size() + " rezervasyon bulunmaktadır.");
     }
 
     @FXML
     private void searchReservations() {
-        String searchTerm = customerSearchField != null ? customerSearchField.getText() : "";
 
-        if (searchTerm.isEmpty()) {
-            loadAllReservations();
-            return;
-        }
-
-        Reservation reservation = ReservationService.getReservationByConfirmationCode(searchTerm);
-
-        if (reservationsTable != null) {
-            reservationsTable.getItems().clear();
-            if (reservation != null) {
-                reservationsTable.getItems().add(reservation);
-            }
-        }
     }
 
     @FXML
@@ -239,7 +232,7 @@ public class ReservationsController extends BaseController {
             return;
         }
 
-        boolean success = ReservationService.updateReservationState(selected.getId(), "CONFIRMED");
+        boolean success = ReservationService.updateReservationState(selected.getId(), ReservationState.CONFIRMED.toString());
 
         if (success) {
             AlertManager.Alert(Alert.AlertType.INFORMATION, "Rezervasyon onaylandı!", "Başarılı", "");
@@ -340,7 +333,23 @@ public class ReservationsController extends BaseController {
 
     @FXML
     private void filterReservations() {
-        // Filtre işlemini uygula
-        loadAllReservations();
+        String searchTerm = customerSearchField != null ? customerSearchField.getText() : "";
+        String allStates = "Tüm Durumlar";
+        List<Reservation> reservations;
+        if (!searchTerm.isEmpty()){
+            reservations = ReservationService.getReservationCustomerName(searchTerm);
+        }else {
+            reservations = ReservationService.getAllReservations();
+        }
+        if (reservationStatusFilter != null && !reservationStatusFilter.getValue().equalsIgnoreCase(allStates) && reservations != null) {
+            reservations = reservations.stream().filter(r -> Objects.equals(r.getState(), reservationStatusFilter.getValue())).toList();
+        }
+
+        if (reservationsTable != null) {
+            reservationsTable.getItems().clear();
+            if (reservations != null) {
+                reservationsTable.getItems().addAll(reservations);
+            }
+        }
     }
 }

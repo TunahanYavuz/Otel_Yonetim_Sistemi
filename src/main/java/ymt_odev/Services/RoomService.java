@@ -3,7 +3,7 @@ package ymt_odev.Services;
 import ymt_odev.Database.DBDataSelection;
 import ymt_odev.Database.DatabaseManager;
 import ymt_odev.Domain.Room;
-import ymt_odev.Patterns.RoomState;
+import ymt_odev.RoomState;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,7 +37,6 @@ public class RoomService {
                 // Kapasite ve tip kontrolü
                 if (guestCount != null && capacity < guestCount) continue;
                 if (roomType != null && !roomType.isEmpty() && !type.equals(roomType)) continue;
-                if (!"AVAILABLE".equals(state)) continue;
 
                 // Çakışan rezervasyon var mı kontrol et
                 if (checkIn != null && checkOut != null) {
@@ -45,6 +44,7 @@ public class RoomService {
                         continue;
                     }
                 }
+                if (!state.equalsIgnoreCase(RoomState.AVAILABLE.toString())) continue;
 
                 Room room = new Room(
                         id,
@@ -83,20 +83,13 @@ public class RoomService {
             boolean hasFeature;
             if (feature == null) feature = "Tümü";
 
-            switch (state) {
-                case "Müsait":
-                    state = "AVAILABLE";
-                    break;
-                case "Dolu":
-                    state = "OCCUPIED";
-                    break;
-                case "Temizlikte":
-                    state = "CLEANING";
-                    break;
-                case "Bakımda":
-                    state = "MAINTENANCE";
-                    break;
-            }
+            state = switch (state) {
+                case "Dolu" -> RoomState.OCCUPIED.toString();
+                case "Temizlikte" -> RoomState.CLEANING.toString();
+                case "Bakımda" -> RoomState.MAINTENANCE.toString();
+                case "Müsait" -> RoomState.AVAILABLE.toString();
+                case null, default -> "Tümü";
+            };
             while (rs != null && rs.next()) {
                 hasFeature = switch (feature) {
                     case "Tümü" -> true;

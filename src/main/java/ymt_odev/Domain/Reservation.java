@@ -1,5 +1,12 @@
 package ymt_odev.Domain;
 
+import ymt_odev.Database.DatabaseConnection;
+import ymt_odev.Database.DatabaseManager;
+import ymt_odev.ReservationState;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -92,27 +99,41 @@ public class Reservation {
     }
 
     public boolean isPending() {
-        return "PENDING".equals(state);
+        return ReservationState.PENDING.toString().equals(state);
     }
 
     public boolean isConfirmed() {
-        return "CONFIRMED".equals(state);
+        return ReservationState.CONFIRMED.toString().equals(state);
     }
 
     public boolean isCheckedIn() {
-        return "CHECKED_IN".equals(state);
+        return ReservationState.CHECKED_IN.toString().equals(state);
     }
 
     public boolean isCheckedOut() {
-        return "CHECKED_OUT".equals(state);
+        return ReservationState.CHECKED_OUT.toString().equals(state);
     }
 
     public boolean isCancelled() {
-        return "CANCELLED".equals(state);
+        return ReservationState.CANCELLED.toString().equals(state);
     }
 
     public String getCustomerName() {
         // Bu bilgi join query ile gelmeli, şimdilik placeholder
+        Connection connection;
+        DatabaseConnection dbConnection = DatabaseConnection.getInstance();
+        connection = dbConnection.getConnection();
+        String query = "SELECT name FROM Customers WHERE id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, customerId);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return "N: "+rs.getString("name")+ "\nId: "+customerId;
+        }catch (Exception e) {
+            System.out.println("Hata"+ e.getMessage());
+        }
+
         return "Müşteri #" + customerId;
     }
 

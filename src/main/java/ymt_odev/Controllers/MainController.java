@@ -8,7 +8,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-
 import ymt_odev.Access;
 import ymt_odev.AlertManager;
 import ymt_odev.Services.UserService;
@@ -38,7 +37,7 @@ public class MainController extends BaseController {
         }
 
         if (contentArea != null && contentArea.getChildren().isEmpty()) {
-            loadContent("/dashboard.fxml");
+            SceneController.loadIntoPane(contentArea ,"/dashboard.fxml");
         }
     }
 
@@ -63,32 +62,18 @@ public class MainController extends BaseController {
         }
     }
 
-    public void loadContent(String fxmlPath) {
-        if (contentArea == null) {
-            return;
-        }
 
-        try {
-            FXMLLoader loader = new FXMLLoader(SceneController.class.getResource(fxmlPath));
-            Node content = loader.load();
-            contentArea.getChildren().setAll(content);
-        } catch (IOException e) {
-            System.err.println("❌ FXML yükleme hatası: " + fxmlPath);
-            e.printStackTrace();
-        }
-    }
-
-    @FXML private void showDashboard() { loadContent("/dashboard.fxml"); }
-    @FXML private void switchToRoomSearch() { loadContent("/room-search.fxml"); }
-    @FXML private void showMyReservations() { loadContent("/my-reservations.fxml"); }
-    @FXML private void switchToProfile() { loadContent("/profile.fxml"); }
-    @FXML private void showCustomerManagement() { loadContent("/customer-management.fxml"); }
-    @FXML private void showRoomManagement() { loadContent("/room-management.fxml"); }
-    @FXML private void switchToReservationManagement() { loadContent("/reservation-management.fxml"); }
-    @FXML private void showCheckinCheckout() { loadContent("/checkin-checkout.fxml"); }
-    @FXML private void showUserManagement() { loadContent("/user-management.fxml"); }
-    @FXML private void showReports() { loadContent("/reports.fxml"); }
-    @FXML private void showSettings() { loadContent("/settings.fxml"); }
+    @FXML private void showDashboard() { SceneController.loadIntoPane(contentArea ,"/dashboard.fxml"); }
+    @FXML private void switchToRoomSearch() { SceneController.loadIntoPane(contentArea ,"/room-search.fxml"); }
+    @FXML private void showMyReservations() { SceneController.loadIntoPane(contentArea ,"/my-reservations.fxml"); }
+    @FXML private void switchToProfile() { SceneController.loadIntoPane(contentArea ,"/profile.fxml"); }
+    @FXML private void showCustomerManagement() { SceneController.loadIntoPane(contentArea ,"/customer-management.fxml"); }
+    @FXML private void showRoomManagement() { SceneController.loadIntoPane(contentArea ,"/room-management.fxml"); }
+    @FXML private void switchToReservationManagement() { SceneController.loadIntoPane(contentArea ,"/reservation-management.fxml"); }
+    @FXML private void showCheckinCheckout() { SceneController.loadIntoPane(contentArea ,"/checkin-checkout.fxml"); }
+    @FXML private void showUserManagement() { SceneController.loadIntoPane(contentArea ,"/user-management.fxml"); }
+    @FXML private void showReports() { SceneController.loadIntoPane(contentArea ,"/reports.fxml"); }
+    @FXML private void showSettings() { SceneController.loadIntoPane(contentArea ,"/settings.fxml"); }
 
     @FXML
     private void handleLogout() {
@@ -98,7 +83,7 @@ public class MainController extends BaseController {
 
     @FXML
     private void showChangePassword() {
-        Dialog<String> dialog = new Dialog<>();
+        Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Şifre Değiştir");
         dialog.setHeaderText("Yeni şifrenizi belirleyin");
 
@@ -126,6 +111,9 @@ public class MainController extends BaseController {
         dialog.getDialogPane().setContent(grid);
 
         dialog.showAndWait().ifPresent(result -> {
+            if (result != saveButton) {
+                return;
+            }
             if (!newPassword.getText().equals(confirmPassword.getText())) {
                 AlertManager.Alert(Alert.AlertType.ERROR, "Şifreler uyuşmuyor!", "Hata", "Lütfen şifreleri tekrar giriniz.");
             } else if (newPassword.getText().length() < 6) {
@@ -150,11 +138,13 @@ public class MainController extends BaseController {
 
     @FXML
     private void switchToMain() {
-        SceneController.switchScene("/main.fxml", "🏨 Otel Yönetim Sistemi - Ana Panel");
+       SceneController.switchScene("/main.fxml", "🏨 Otel Yönetim Sistemi - Ana Panel");
     }
 
     @FXML
     private void showStaffDashboard() {
-        loadContent("/dashboard.fxml");
+        SceneController.loadIntoPane(contentArea ,"/dashboard.fxml");
+
     }
+
 }

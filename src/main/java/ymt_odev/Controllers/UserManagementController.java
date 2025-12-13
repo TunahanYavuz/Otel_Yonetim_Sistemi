@@ -9,12 +9,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import ymt_odev.Access;
 import ymt_odev.AlertManager;
 import ymt_odev.Database.DBDataDeleter;
 import ymt_odev.Database.DBDataInsertion;
 import ymt_odev.Database.DBDataSelection;
 import ymt_odev.Database.DBDataUpdater;
 import ymt_odev.Database.DatabaseManager;
+import ymt_odev.LoyaltyLevel;
 import ymt_odev.Users.Admin;
 import ymt_odev.Users.Customer;
 import ymt_odev.Users.Staff;
@@ -183,7 +185,7 @@ public class UserManagementController extends BaseController {
                             rs.getString("name"),
                             rs.getString("surname"),
                             rs.getString("createdDate") != null ? rs.getString("createdDate") : "",
-                            rs.getString("loyaltyLevel") != null ? rs.getString("loyaltyLevel") : "Bronze",
+                            rs.getString("loyaltyLevel") != null ? rs.getString("loyaltyLevel") : LoyaltyLevel.BRONZE.toString(),
                             rs.getInt("totalBookings"),
                             rs.getBoolean("isActive")
                     );
@@ -443,7 +445,11 @@ public class UserManagementController extends BaseController {
         TextField phoneField = new TextField(customer.getPhone());
         TextField tcField = new TextField(customer.getNationalId());
         ComboBox<String> loyaltyCombo = new ComboBox<>();
-        loyaltyCombo.getItems().addAll("Bronze", "Silver", "Gold", "Platinum");
+        loyaltyCombo.getItems().addAll(
+                LoyaltyLevel.BRONZE.toString(),
+                LoyaltyLevel.SILVER.toString(),
+                LoyaltyLevel.GOLD.toString(),
+                LoyaltyLevel.PLATINUM.toString());
         loyaltyCombo.setValue(customer.getLoyaltyLevel());
 
         grid.add(new Label("Ad:"), 0, 0);
@@ -531,7 +537,7 @@ public class UserManagementController extends BaseController {
         ComboBox<String> departmentCombo = new ComboBox<>();
         departmentCombo.getItems().addAll("Resepsiyon", "Temizlik", "Muhasebe", "IT", "Yönetim");
         ComboBox<String> userTypeCombo = new ComboBox<>();
-        userTypeCombo.getItems().addAll("STAFF", "ADMIN");
+        userTypeCombo.getItems().addAll(Access.STAFF.toString(), Access.ADMIN.toString());
 
         grid.add(new Label("Ad Soyad:"), 0, 0);
         grid.add(nameField, 1, 0);
@@ -555,15 +561,25 @@ public class UserManagementController extends BaseController {
                 DatabaseManager inserter = new DBDataInsertion();
 
                 String[] columns = new String[]{
-                        "name", "email", "phone", "tcKimlik", "password",
+                        "name","surname","username", "email", "phone", "tcKimlik", "password",
                         "department", "userType", "accessLevel"
                 };
 
                 String userType = userTypeCombo.getValue();
-                String accessLevel = "ADMIN".equals(userType) ? "ADMIN" : "STANDARD";
+                String accessLevel = Access.ADMIN.toString().equals(userType) ? Access.ADMIN.toString() : Access.STAFF.toString();
+                String[] str = nameField.getText().split(" ");
+                StringBuilder name = new StringBuilder();
+                for (int i = 0; i < str.length - 1; i++) {
+                    if (i != 0)
+                        name.append(" ").append(str[i]);
+                    else
+                        name.append(str[i]);
+                }
 
                 Object[] values = new Object[]{
-                        nameField.getText(),
+                        name.toString(),
+                        str[str.length - 1],
+                        name.append(" ").append(str[str.length - 1]).toString(),
                         emailField.getText(),
                         phoneField.getText(),
                         tcField.getText(),

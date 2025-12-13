@@ -12,6 +12,7 @@ import ymt_odev.Database.DBDataUpdater;
 import ymt_odev.Database.DBDataDeleter;
 import ymt_odev.Database.DatabaseManager;
 import ymt_odev.Domain.Room;
+import ymt_odev.RoomState;
 import ymt_odev.Services.RoomService;
 
 import java.util.List;
@@ -28,6 +29,9 @@ public class RoomManagementController extends BaseController {
     @FXML private TableColumn<Room, Void> actionsColumn;
     @FXML private ComboBox<String> roomTypeCombo;
     @FXML private Text availableRoomsCount;
+    @FXML private Text totalRoomsCount;
+    @FXML private Text cleaningRoomsCount;
+    @FXML private Text maintenanceRoomsCount;
     @FXML private ComboBox<String> roomStatusFilter;
     @FXML private TextField roomNumberSearchField;
     @FXML private ComboBox<String> featureFilter;
@@ -135,7 +139,11 @@ public class RoomManagementController extends BaseController {
     }
 
     private void changeRoomStatus(Room room) {
-        ChoiceDialog<String> dialog = new ChoiceDialog<>(room.getState(), "AVAILABLE", "OCCUPIED", "CLEANING", "MAINTENANCE");
+        ChoiceDialog<String> dialog = new ChoiceDialog<>(room.getState(),
+                RoomState.AVAILABLE.toString(),
+                RoomState.OCCUPIED.toString(),
+                RoomState.CLEANING.toString(),
+                RoomState.MAINTENANCE.toString());
         dialog.setTitle("Oda Durumu Değiştir");
         dialog.setHeaderText("Yeni durum seçin");
         dialog.setContentText("Durum:");
@@ -176,9 +184,38 @@ public class RoomManagementController extends BaseController {
             roomResultsTable.getItems().addAll(rooms);
         }
 
+        // İstatistikleri veritabanından çekilen verilere göre güncelle
+        updateRoomStatistics(rooms);
+    }
+
+    private void updateRoomStatistics(List<Room> rooms) {
+        // Toplam oda sayısı
+        if (totalRoomsCount != null) {
+            totalRoomsCount.setText(String.valueOf(rooms.size()));
+        }
+
+        // Müsait oda sayısı
         if (availableRoomsCount != null) {
-            long available = rooms.stream().filter(Room::isAvailable).count();
+            long available = rooms.stream()
+                    .filter(room -> RoomState.AVAILABLE.toString().equalsIgnoreCase(room.getState()))
+                    .count();
             availableRoomsCount.setText(String.valueOf(available));
+        }
+
+        // Temizlikte olan oda sayısı
+        if (cleaningRoomsCount != null) {
+            long cleaning = rooms.stream()
+                    .filter(room -> RoomState.CLEANING.toString().equalsIgnoreCase(room.getState()))
+                    .count();
+            cleaningRoomsCount.setText(String.valueOf(cleaning));
+        }
+
+        // Bakımda olan oda sayısı
+        if (maintenanceRoomsCount != null) {
+            long maintenance = rooms.stream()
+                    .filter(room -> RoomState.MAINTENANCE.toString().equalsIgnoreCase(room.getState()))
+                    .count();
+            maintenanceRoomsCount.setText(String.valueOf(maintenance));
         }
     }
 
@@ -292,7 +329,7 @@ public class RoomManagementController extends BaseController {
                             balconyCheck.isSelected(),
                             seaViewCheck.isSelected(),
                             kitchenCheck.isSelected(),
-                            "AVAILABLE"
+                            RoomState.AVAILABLE.toString()
                     };
 
                     boolean success = inserter.insertData("Rooms", columns, values);

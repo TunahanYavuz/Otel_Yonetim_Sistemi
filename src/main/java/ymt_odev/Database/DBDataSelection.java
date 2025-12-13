@@ -1,11 +1,13 @@
 package ymt_odev.Database;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+/**
+ * Veritabanından veri seçme işlemlerini yöneten sınıf
+ */
 public class DBDataSelection extends DatabaseManager {
-
-    protected Connection connection;
-    protected DatabaseConnection dbConnection;
 
     /**
      * Tablo'dan veri seçer ve ResultSet döndürür
@@ -13,9 +15,9 @@ public class DBDataSelection extends DatabaseManager {
      * @param columns Seçilecek kolonlar
      * @return ResultSet - null ise hata var demektir
      */
+    @Override
     public ResultSet selectData(String tableName, String[] columns) {
-        dbConnection = DatabaseConnection.getInstance();
-        connection = dbConnection.getConnection();
+        connection = getDbConnection();
 
         if (connection == null) {
             System.err.println("Veritabanı bağlantısı yok");
@@ -35,7 +37,7 @@ public class DBDataSelection extends DatabaseManager {
             PreparedStatement preparedStatement = connection.prepareStatement(query.toString());
             return preparedStatement.executeQuery();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Select hatası: " + e.getMessage());
             return null;
         }
@@ -49,9 +51,9 @@ public class DBDataSelection extends DatabaseManager {
      * @param values Koşul değerleri
      * @return ResultSet - null ise hata var demektir
      */
+    @Override
     public ResultSet selectDataWithCondition(String tableName, String[] columns, String[] condition, String[] values) {
-        dbConnection = DatabaseConnection.getInstance();
-        connection = dbConnection.getConnection();
+        connection = getDbConnection();
 
         if (connection == null) {
             System.err.println("Veritabanı bağlantısı yok");
@@ -59,41 +61,66 @@ public class DBDataSelection extends DatabaseManager {
         }
 
         try {
-            PreparedStatement preparedStatement = getPreparedStatement(tableName, columns, condition, values);
+            StringBuilder query = new StringBuilder("SELECT ");
+            for (int i = 0; i < columns.length; i++) {
+                query.append(columns[i]);
+                if (i < columns.length - 1) {
+                    query.append(", ");
+                }
+            }
+            query.append(" FROM ").append(tableName);
+
+            if (condition.length > 0 && values.length > 0 && condition.length == values.length) {
+                query.append(" WHERE ");
+                for (int i = 0; i < condition.length; i++) {
+                    query.append(condition[i]).append(" = ?");
+                    if (i < condition.length - 1) {
+                        query.append(" AND ");
+                    }
+                }
+            }
+
+            PreparedStatement preparedStatement = connection.prepareStatement(query.toString());
+            for (int i = 0; i < values.length; i++) {
+                preparedStatement.setObject(i + 1, values[i]);
+            }
+
             return preparedStatement.executeQuery();
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             System.err.println("Select hatası: " + e.getMessage());
             return null;
         }
     }
 
+    /**
+     * LIKE sorgusu ile veri seçer (yakınlık araması)
+     * @param tableName Tablo adı
+     * @param condition Koşul kolonu
+     * @param value Aranacak değer
+     * @return ResultSet - null ise hata var demektir
+     */
+    @Override
+    public ResultSet selectDataWithProximity(String tableName, String condition, String value) {
+        connection = getDbConnection();
 
+        if (connection == null) {
+            System.err.println("Veritabanı bağlantısı yok");
+            return null;
+        }
 
-    private PreparedStatement getPreparedStatement(String tableName, String[] columns, String[] condition, String[] values) throws SQLException {
-        PreparedStatement preparedStatement;
-        StringBuilder query = new StringBuilder("SELECT ");
-        for (int i = 0; i < columns.length; i++) {
-            query.append(columns[i]);
-            if (i < columns.length - 1) {
-                query.append(", ");
-            }
-        }
-        query.append(" FROM ").append(tableName);
-        if (condition.length > 0 && values.length > 0 && condition.length == values.length) {
-            query.append(" WHERE ");
-            for (int i = 0; i < condition.length; i++) {
-                query.append(condition[i]).append(" = ?");
-                if (i < condition.length - 1) {
-                    query.append(" AND ");
-                }
-            }
-        }
-        preparedStatement = connection.prepareStatement(query.toString());
+        try {
+            String query = "SELECT * FROM " + tableName +
+                          " INNER JOIN Customers ON Customers.id = " + tableName + ".customerId " +
+                          "WHERE " + condition + " LIKE ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, "%" + value + "%");
 
-        for (int i = 0; i < values.length; i++) {
-            preparedStatement.setObject(i + 1, values[i]);
+            return preparedStatement.executeQuery();
+
+        } catch (SQLException e) {
+            System.err.println("Select hatası: " + e.getMessage());
+            return null;
         }
-        return preparedStatement;
     }
 }

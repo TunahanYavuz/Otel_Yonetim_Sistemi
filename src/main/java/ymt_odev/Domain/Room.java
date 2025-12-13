@@ -1,5 +1,7 @@
 package ymt_odev.Domain;
 
+import ymt_odev.RoomState;
+
 import java.util.Objects;
 
 /**
@@ -68,7 +70,7 @@ public class Room {
     }
 
     public boolean isAvailable() {
-        return "AVAILABLE".equals(state);
+        return RoomState.AVAILABLE.toString().equals(state);
     }
 
     @Override
