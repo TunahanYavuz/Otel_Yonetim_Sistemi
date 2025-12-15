@@ -126,6 +126,34 @@ public class ReservationService {
     }
 
     /**
+     * Ödeme onaylama işlemi - isPaid değerini true yapar
+     */
+    public static boolean confirmPayment(int reservationId) {
+        DatabaseManager updater = new DBDataUpdater();
+
+        String[] columns = new String[]{"isPaid"};
+        String[] values = new String[]{"1"}; // SQL Server'da BIT için 1 = true
+        String[] whereClause = new String[]{"id"};
+        Object[] whereParams = new Object[]{reservationId};
+
+        boolean success = updater.updateDataWithCondition(
+                "Reservations",
+                columns,
+                columns,
+                values,
+                whereClause,
+                whereParams
+        );
+
+        if (success) {
+            // Ödeme onaylandığında durum da CONFIRMED yapılabilir
+            updateReservationState(reservationId, "CONFIRMED");
+        }
+
+        return success;
+    }
+
+    /**
      * Check-in işlemi yapar
      */
     public static boolean checkIn(int reservationId) {
@@ -194,6 +222,64 @@ public class ReservationService {
         } catch (SQLException e) {
             System.err.println("Rezervasyon listesi hatası: " + e.getMessage());
         }
+        return reservations;
+    }
+
+    /**
+     * Tarih aralığına göre rezervasyonları filtreler
+     * @param startDate Başlangıç tarihi (check-in tarihi bu tarihten sonra veya eşit olmalı)
+     * @param endDate Bitiş tarihi (check-out tarihi bu tarihten önce veya eşit olmalı)
+     * @param status Durum filtresi (null ise tüm durumlar)
+     */
+    public static List<Reservation> getReservationsByDateRange(LocalDate startDate, LocalDate endDate, String status) {
+        List<Reservation> reservations = new ArrayList<>();
+
+        try {
+            java.sql.Connection conn = ymt_odev.Database.DatabaseConnection.getInstance().getConnection();
+
+            StringBuilder sql = new StringBuilder();
+            sql.append("SELECT * FROM Reservations WHERE 1=1");
+
+            if (startDate != null) {
+                sql.append(" AND checkInDate >= ?");
+            }
+            if (endDate != null) {
+                sql.append(" AND checkOutDate <= ?");
+            }
+            if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("Tüm Durumlar")) {
+                sql.append(" AND state = ?");
+            }
+
+            sql.append(" ORDER BY checkInDate DESC");
+
+            java.sql.PreparedStatement stmt = conn.prepareStatement(sql.toString());
+
+            int paramIndex = 1;
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            if (startDate != null) {
+                stmt.setString(paramIndex++, startDate.format(dateFormatter));
+            }
+            if (endDate != null) {
+                stmt.setString(paramIndex++, endDate.format(dateFormatter));
+            }
+            if (status != null && !status.isEmpty() && !status.equalsIgnoreCase("Tüm Durumlar")) {
+                stmt.setString(paramIndex++, status);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                reservations.add(mapResultSetToReservation(rs));
+            }
+
+            rs.close();
+            stmt.close();
+
+        } catch (SQLException e) {
+            System.err.println("Tarih filtreli rezervasyon listesi hatası: " + e.getMessage());
+        }
+
         return reservations;
     }
 

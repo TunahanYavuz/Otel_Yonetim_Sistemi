@@ -4,11 +4,17 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.util.StringConverter;
+import ymt_odev.Access;
 import ymt_odev.AlertManager;
 import ymt_odev.Domain.Room;
 import ymt_odev.Patterns.PaymentProcessor;
+import ymt_odev.RoomState;
+import ymt_odev.Services.CustomerService;
 import ymt_odev.Services.ReservationService;
 import ymt_odev.Services.RoomService;
+import ymt_odev.Users.Customer;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -40,11 +46,19 @@ public class RoomSearchController extends BaseController {
     @FXML private ComboBox<String> paymentMethodCombo;
     @FXML private javafx.scene.control.TextArea specialRequestsArea;
 
+    // Müşteri seçimi için alanlar (Personel/Admin için)
+    @FXML private VBox customerSelectionSection;
+    @FXML private TextField customerSearchField;
+    @FXML private ComboBox<Customer> customerComboBox;
+
     private Room selectedRoom;
 
     @Override
     protected void initialize() {
         super.initialize();
+
+        // Müşteri seçim bölümünü rol kontrolüne göre ayarla
+        setupCustomerSelection();
 
         // Oda tipi seçeneklerini ekle
         if (roomTypeCombo != null) {
@@ -154,6 +168,77 @@ public class RoomSearchController extends BaseController {
                         "Açıklama: " + room.getDescription());
     }
 
+    /**
+     * Müşteri seçim bölümünü rol kontrolüne göre ayarlar
+     * Personel ve Admin için görünür, Müşteri için gizli
+     */
+    private void setupCustomerSelection() {
+        String currentRole = SessionManager.getCurrentRole();
+        boolean isStaffOrAdmin = Access.STAFF.toString().equals(currentRole) ||
+                                  Access.ADMIN.toString().equals(currentRole);
+
+        if (customerSelectionSection != null) {
+            customerSelectionSection.setVisible(isStaffOrAdmin);
+            customerSelectionSection.setManaged(isStaffOrAdmin);
+        }
+
+        // ComboBox için StringConverter ayarla
+        if (customerComboBox != null) {
+            customerComboBox.setConverter(new StringConverter<Customer>() {
+                @Override
+                public String toString(Customer customer) {
+                    if (customer == null) {
+                        return null;
+                    }
+                    return customer.getFirstName() + " " + customer.getLastName() + " (" + customer.getEmail() + ")";
+                }
+
+                @Override
+                public Customer fromString(String string) {
+                    return null; // Kullanılmayacak
+                }
+            });
+        }
+    }
+
+    /**
+     * Müşteri arama işlemi - Personel/Admin için
+     */
+    @FXML
+    private void searchCustomer() {
+        if (customerSearchField == null || customerComboBox == null) {
+            return;
+        }
+
+        String searchTerm = customerSearchField.getText();
+        if (searchTerm == null || searchTerm.trim().isEmpty()) {
+            AlertManager.Alert(
+                    Alert.AlertType.WARNING,
+                    "Lütfen arama yapmak için müşteri adı, email veya TC girin!",
+                    "Arama Terimi Gerekli",
+                    ""
+            );
+            return;
+        }
+
+        List<Customer> customers = CustomerService.searchCustomers(searchTerm.trim());
+
+        customerComboBox.getItems().clear();
+
+        if (customers.isEmpty()) {
+            AlertManager.Alert(
+                    Alert.AlertType.INFORMATION,
+                    "Arama kriterlerine uygun müşteri bulunamadı!",
+                    "Sonuç Yok",
+                    ""
+            );
+        } else {
+            customerComboBox.getItems().addAll(customers);
+            // İlk müşteriyi seç
+            customerComboBox.setValue(customers.getFirst());
+        }
+    }
+
     @FXML
     private void searchRooms() {
         LocalDate checkIn = checkInDatePicker != null ? checkInDatePicker.getValue() : null;
@@ -190,7 +275,7 @@ public class RoomSearchController extends BaseController {
             roomType = null;
         }
 
-        List<Room> rooms = RoomService.searchAvailableRooms(checkIn, checkOut, guestCount, roomType);
+        List<Room> rooms = RoomService.searchAvailableRooms(checkIn, RoomState.AVAILABLE, checkOut, guestCount, roomType);
 
         // Checkbox filtreleri uygula
         if (balconyCheck != null && balconyCheck.isSelected()) {
@@ -246,6 +331,9 @@ public class RoomSearchController extends BaseController {
         if (searchResultsSection != null) searchResultsSection.setVisible(false);
         if (paymentMethodCombo != null) paymentMethodCombo.setValue(null);
         if (specialRequestsArea != null) specialRequestsArea.clear();
+        // Müşteri arama alanlarını temizle
+        if (customerSearchField != null) customerSearchField.clear();
+        if (customerComboBox != null) customerComboBox.getItems().clear();
         clearSelection();
     }
 
@@ -299,9 +387,33 @@ public class RoomSearchController extends BaseController {
             );
             return;
         }
+
+        // Müşteri ID'sini belirle - Personel/Admin için seçilen müşteri, diğerleri için oturumdaki kullanıcı
+        int customerId;
+        String currentRole = SessionManager.getCurrentRole();
+        boolean isStaffOrAdmin = Access.STAFF.toString().equals(currentRole) ||
+                                  Access.ADMIN.toString().equals(currentRole);
+
+        if (isStaffOrAdmin) {
+            // Personel/Admin için müşteri seçimi zorunlu
+            if (customerComboBox == null || customerComboBox.getValue() == null) {
+                AlertManager.Alert(
+                        Alert.AlertType.WARNING,
+                        "Lütfen rezervasyon yapılacak müşteriyi seçin!",
+                        "Müşteri Seçilmedi",
+                        ""
+                );
+                return;
+            }
+            customerId = customerComboBox.getValue().getId();
+        } else {
+            // Müşteri kendi hesabı için rezervasyon yapıyor
+            customerId = SessionManager.getUser().getId();
+        }
+
         PaymentProcessor paymentProcessor = new PaymentProcessor();
         paymentProcessor.setPaymentStrategy(PaymentProcessor.createPaymentStrategy(paymentMethod.toLowerCase()));
-        if(paymentProcessor.processPayment(roomToBook.getId(), roomToBook.getPricePerNight(), SessionManager.getUser().getEmail())){
+        if(!paymentProcessor.processPayment(roomToBook.getId(), roomToBook.getPricePerNight(), SessionManager.getUser().getEmail())){
             AlertManager.Alert(Alert.AlertType.WARNING,
                     "Ödeme Gerçekleştirelemedi",
                     "Ödeme Başarısız!",
@@ -318,7 +430,7 @@ public class RoomSearchController extends BaseController {
         double totalPrice = nights * roomToBook.getPricePerNight();
 
         String confirmationCode = ReservationService.createReservation(
-                SessionManager.getUser().getId(),
+                customerId,
                 roomToBook.getId(),
                 checkIn,
                 checkOut,

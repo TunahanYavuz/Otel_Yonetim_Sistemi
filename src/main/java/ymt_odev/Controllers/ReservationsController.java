@@ -68,18 +68,25 @@ public class ReservationsController extends BaseController {
             if (actionsColumn != null) {
                 actionsColumn.setCellFactory(param -> new TableCell<>() {
                     private final Button viewBtn = new Button("👁️");
+                    private final Button confirmPaymentBtn = new Button("💰");
                     private final Button checkInBtn = new Button("✅");
                     private final Button checkOutBtn = new Button("🚪");
-                    private final HBox buttons = new HBox(5, viewBtn, checkInBtn, checkOutBtn);
+                    private final HBox buttons = new HBox(5, viewBtn, confirmPaymentBtn, checkInBtn, checkOutBtn);
 
                     {
                         viewBtn.setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 10px;");
+                        confirmPaymentBtn.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 10px;");
                         checkInBtn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 10px;");
                         checkOutBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 10px;");
 
                         viewBtn.setOnAction(e -> {
                             Reservation reservation = getTableView().getItems().get(getIndex());
                             selectReservation(reservation);
+                        });
+
+                        confirmPaymentBtn.setOnAction(e -> {
+                            Reservation reservation = getTableView().getItems().get(getIndex());
+                            confirmPayment(reservation);
                         });
 
                         checkInBtn.setOnAction(e -> {
@@ -96,7 +103,33 @@ public class ReservationsController extends BaseController {
                     @Override
                     protected void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);
-                        setGraphic(empty ? null : buttons);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            Reservation reservation = getTableView().getItems().get(getIndex());
+                            // Ödeme onaylandıysa butonu gizle/devre dışı bırak
+                            if (reservation != null && reservation.isPaid()) {
+                                confirmPaymentBtn.setDisable(true);
+                                confirmPaymentBtn.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-cursor: default; -fx-font-size: 10px;");
+                            } else {
+                                confirmPaymentBtn.setDisable(false);
+                                confirmPaymentBtn.setStyle("-fx-background-color: #f39c12; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 10px;");
+                            }
+                            // İptal edilmiş rezervasyonlar için check-in/out butonlarını devre dışı bırak
+                            boolean isCancelled = reservation != null && reservation.getState().equalsIgnoreCase(ReservationState.CANCELLED.toString());
+                            boolean isNotPaid = reservation != null && !reservation.isPaid();
+                            checkInBtn.setDisable(isCancelled || isNotPaid);
+                            checkOutBtn.setDisable(isCancelled || isNotPaid);
+
+                            if (isCancelled || isNotPaid) {
+                                checkInBtn.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-cursor: default; -fx-font-size: 10px;");
+                                checkOutBtn.setStyle("-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-cursor: default; -fx-font-size: 10px;");
+                            } else {
+                                checkInBtn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 10px;");
+                                checkOutBtn.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 10px;");
+                            }
+                            setGraphic(buttons);
+                        }
                     }
                 });
             }
@@ -129,6 +162,18 @@ public class ReservationsController extends BaseController {
     private void doCheckIn(Reservation reservation) {
         if (reservation == null) return;
 
+        // İptal edilmiş rezervasyon kontrolü
+        if (reservation.getState().equalsIgnoreCase(ReservationState.CANCELLED.toString())) {
+            AlertManager.Alert(Alert.AlertType.WARNING, "İptal edilmiş rezervasyonlar için check-in yapılamaz!", "Uyarı", "");
+            return;
+        }
+
+        // Ödeme kontrolü
+        if (!reservation.isPaid()) {
+            AlertManager.Alert(Alert.AlertType.WARNING, "Ödemesi yapılmamış rezervasyonlar için check-in yapılamaz!\nLütfen önce ödemeyi onaylayın.", "Ödeme Gerekli", "");
+            return;
+        }
+
         boolean success = ReservationService.checkIn(reservation.getId());
 
         if (success) {
@@ -143,6 +188,18 @@ public class ReservationsController extends BaseController {
     private void doCheckOut(Reservation reservation) {
         if (reservation == null) return;
 
+        // İptal edilmiş rezervasyon kontrolü
+        if (reservation.getState().equalsIgnoreCase(ReservationState.CANCELLED.toString())) {
+            AlertManager.Alert(Alert.AlertType.WARNING, "İptal edilmiş rezervasyonlar için check-out yapılamaz!", "Uyarı", "");
+            return;
+        }
+
+        // Ödeme kontrolü
+        if (!reservation.isPaid()) {
+            AlertManager.Alert(Alert.AlertType.WARNING, "Ödemesi yapılmamış rezervasyonlar için check-out yapılamaz!\nLütfen önce ödemeyi onaylayın.", "Ödeme Gerekli", "");
+            return;
+        }
+
         boolean success = ReservationService.checkOut(reservation.getId());
 
         if (success) {
@@ -151,6 +208,34 @@ public class ReservationsController extends BaseController {
             loadAllReservations();
         } else {
             AlertManager.Alert(Alert.AlertType.ERROR, "Check-out başarısız!", "Hata", "");
+        }
+    }
+
+    /**
+     * Ödeme onaylama işlemi - isPaid değerini true yapar
+     */
+    private void confirmPayment(Reservation reservation) {
+        if (reservation == null) return;
+
+        // İptal edilmiş rezervasyon kontrolü
+        if (reservation.getState().equalsIgnoreCase(ReservationState.CANCELLED.toString())) {
+            AlertManager.Alert(Alert.AlertType.WARNING, "İptal edilmiş rezervasyonlar için ödeme onaylanamaz!", "Uyarı", "");
+            return;
+        }
+
+        // Zaten ödenmiş mi kontrolü
+        if (reservation.isPaid()) {
+            AlertManager.Alert(Alert.AlertType.INFORMATION, "Bu rezervasyonun ödemesi zaten onaylanmış!", "Bilgi", "");
+            return;
+        }
+
+        boolean success = ReservationService.confirmPayment(reservation.getId());
+
+        if (success) {
+            AlertManager.Alert(Alert.AlertType.INFORMATION, "Ödeme başarıyla onaylandı!", "Başarılı", "");
+            loadAllReservations();
+        } else {
+            AlertManager.Alert(Alert.AlertType.ERROR, "Ödeme onaylama başarısız!", "Hata", "");
         }
     }
 
@@ -288,11 +373,6 @@ public class ReservationsController extends BaseController {
         doCheckOut(selected);
     }
 
-    @FXML
-    private void editReservation() {
-        AlertManager.Alert(Alert.AlertType.INFORMATION,
-                "Rezervasyon düzenleme özelliği yakında eklenecek!", "Bilgi", "");
-    }
 
     @FXML
     private void clearFilters() {
@@ -320,29 +400,49 @@ public class ReservationsController extends BaseController {
     }
 
     @FXML
-    private void generateReport() {
-        AlertManager.Alert(Alert.AlertType.INFORMATION,
-                "Rapor oluşturma özelliği yakında eklenecek!", "Bilgi", "");
-    }
-
-    @FXML
-    private void exportReservations() {
-        AlertManager.Alert(Alert.AlertType.INFORMATION,
-                "Dışa aktarma özelliği yakında eklenecek!", "Bilgi", "");
-    }
-
-    @FXML
     private void filterReservations() {
         String searchTerm = customerSearchField != null ? customerSearchField.getText() : "";
         String allStates = "Tüm Durumlar";
+        String selectedStatus = reservationStatusFilter != null ? reservationStatusFilter.getValue() : allStates;
+
+        java.time.LocalDate startDate = filterStartDate != null ? filterStartDate.getValue() : null;
+        java.time.LocalDate endDate = filterEndDate != null ? filterEndDate.getValue() : null;
+
         List<Reservation> reservations;
-        if (!searchTerm.isEmpty()){
+
+        // Müşteri adı araması varsa
+        if (!searchTerm.isEmpty()) {
             reservations = ReservationService.getReservationCustomerName(searchTerm);
-        }else {
-            reservations = ReservationService.getAllReservations();
-        }
-        if (reservationStatusFilter != null && !reservationStatusFilter.getValue().equalsIgnoreCase(allStates) && reservations != null) {
-            reservations = reservations.stream().filter(r -> Objects.equals(r.getState(), reservationStatusFilter.getValue())).toList();
+
+            // Ardından tarih ve durum filtreleri uygula (client-side)
+            if (reservations != null) {
+                if (startDate != null) {
+                    final java.time.LocalDate finalStartDate = startDate;
+                    reservations = reservations.stream()
+                            .filter(r -> r.getCheckInDate() != null && !r.getCheckInDate().isBefore(finalStartDate))
+                            .toList();
+                }
+                if (endDate != null) {
+                    final java.time.LocalDate finalEndDate = endDate;
+                    reservations = reservations.stream()
+                            .filter(r -> r.getCheckOutDate() != null && !r.getCheckOutDate().isAfter(finalEndDate))
+                            .toList();
+                }
+                if (!selectedStatus.equalsIgnoreCase(allStates)) {
+                    reservations = reservations.stream()
+                            .filter(r -> Objects.equals(r.getState(), selectedStatus))
+                            .toList();
+                }
+            }
+        } else {
+            // Tarih aralığı ve/veya durum filtresi varsa veritabanından direkt filtreli çek
+            if (startDate != null || endDate != null || !selectedStatus.equalsIgnoreCase(allStates)) {
+                String statusParam = selectedStatus.equalsIgnoreCase(allStates) ? null : selectedStatus;
+                reservations = ReservationService.getReservationsByDateRange(startDate, endDate, statusParam);
+            } else {
+                // Filtre yoksa tüm rezervasyonları getir
+                reservations = ReservationService.getAllReservations();
+            }
         }
 
         if (reservationsTable != null) {
@@ -350,6 +450,12 @@ public class ReservationsController extends BaseController {
             if (reservations != null) {
                 reservationsTable.getItems().addAll(reservations);
             }
+        }
+
+        // Filtrelenen sonuç sayısını güncelle
+        int count = reservations != null ? reservations.size() : 0;
+        if (reservationCountText != null) {
+            reservationCountText.setText("Filtrelenen: " + count + " rezervasyon bulundu.");
         }
     }
 }

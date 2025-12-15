@@ -12,6 +12,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -56,6 +57,16 @@
                         </padding>
 
                         <Text styleClass="section-title" text="🔍 Oda Arama Kriterleri" />
+
+                        <!-- Müşteri Seçimi - Personel/Admin için görünür -->
+                        <VBox fx:id="customerSelectionSection" spacing="10" visible="false" managed="false">
+                            <Text styleClass="info-text" text="👤 Müşteri Seçimi (Personel/Admin):" />
+                            <HBox alignment="CENTER_LEFT" spacing="15">
+                                <TextField fx:id="customerSearchField" prefWidth="250" promptText="Müşteri adı, email veya TC girin..." styleClass="modern-textfield" />
+                                <Button onAction="#searchCustomer" styleClass="action-button" text="🔍 Müşteri Ara" />
+                                <ComboBox fx:id="customerComboBox" prefWidth="300" promptText="Müşteri seçin..." styleClass="modern-textfield" />
+                            </HBox>
+                        </VBox>
 
                         <!-- Tarih Seçimi -->
                         <HBox alignment="CENTER_LEFT" spacing="20">

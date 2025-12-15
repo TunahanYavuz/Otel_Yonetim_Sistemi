@@ -36,6 +36,12 @@ public class PaymentProcessor {
      * Ödeme kaydını veritabanına ekler
      */
     private void recordPayment(int reservationId, double amount, String paymentMethod) {
+        // Önce rezervasyonun var olup olmadığını kontrol et
+        if (!isReservationExists(reservationId)) {
+            System.err.println("❌ Hata: Rezervasyon bulunamadı. ID: " + reservationId);
+            return;
+        }
+
         DatabaseManager inserter = new DBDataInsertion();
 
         String[] columns = new String[]{
@@ -48,7 +54,31 @@ public class PaymentProcessor {
                 reservationId, amount, paymentMethod, "DEPOSIT", transactionId
         };
 
-        inserter.insertData("Payments", columns, values);
+        boolean success = inserter.insertData("Payments", columns, values);
+        if (!success) {
+            System.err.println("❌ Ödeme kaydedilemedi. ReservationId: " + reservationId);
+        }
+    }
+
+    /**
+     * Rezervasyonun var olup olmadığını kontrol eder
+     */
+    private boolean isReservationExists(int reservationId) {
+        ymt_odev.Database.DBDataSelection selector = new ymt_odev.Database.DBDataSelection();
+        try {
+            java.sql.ResultSet rs = selector.selectDataWithCondition(
+                    "Reservations",
+                    new String[]{"id"},
+                    new String[]{"id"},
+                    new String[]{String.valueOf(reservationId)}
+            );
+            boolean exists = rs != null && rs.next();
+            if (rs != null) rs.close();
+            return exists;
+        } catch (Exception e) {
+            System.err.println("Rezervasyon kontrol hatası: " + e.getMessage());
+            return false;
+        }
     }
 
     /**

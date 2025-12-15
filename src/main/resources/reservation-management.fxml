@@ -115,7 +115,6 @@
                                 <Button fx:id="checkInButton" onAction="#performCheckIn" prefWidth="140" styleClass="action-button" text="✅ Check-in Yap" />
                                 <Button fx:id="checkOutButton" onAction="#performCheckOut" prefWidth="140" styleClass="action-button" text="🚪 Check-out Yap" />
                                 <Button fx:id="cancelButton" onAction="#cancelReservation" prefWidth="140" styleClass="secondary-button" text="❌ İptal Et" />
-                                <Button fx:id="editButton" onAction="#editReservation" prefWidth="140" styleClass="secondary-button" text="✏️ Düzenle" />
                             </VBox>
                         </HBox>
 
@@ -142,9 +141,6 @@
                 <Text fx:id="selectedReservationText" styleClass="status-text" />
 
                 <Region HBox.hgrow="ALWAYS" />
-
-                <Button onAction="#generateReport" styleClass="secondary-button" text="📊 Rapor Al" />
-                <Button onAction="#exportReservations" styleClass="secondary-button" text="📤 Dışa Aktar" />
             </HBox>
         </bottom>
 

@@ -139,8 +139,22 @@ public class Reservation {
 
     public String getRoomNumber() {
         // Bu bilgi join query ile gelmeli, şimdilik placeholder
+        Connection connection;
+        DatabaseConnection dbConnection = DatabaseConnection.getInstance();
+        connection = dbConnection.getConnection();
+        String query = "SELECT roomNumber FROM Rooms r left join Reservations rs on r.id = rs.roomId WHERE rs.roomId = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, this.roomId);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            return "RoomNo: "+rs.getString("roomNumber")+ "\nRoomId: "+roomId;
+        }catch (Exception e) {
+            System.out.println("Hata"+ e.getMessage());
+        }
         return "Oda #" + roomId;
     }
+
 
     public String getPaymentStatus() {
         return isPaid ? "Ödendi" : "Ödenmedi";

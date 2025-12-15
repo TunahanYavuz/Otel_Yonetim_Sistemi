@@ -20,7 +20,6 @@ import java.util.Map;
 public class AuthController extends BaseController {
 
     // Login.fxml
-    @FXML private ToggleGroup userTypeGroup;
     @FXML private RadioButton customerRadio;
     @FXML private RadioButton staffRadio;
     @FXML private TextField username;

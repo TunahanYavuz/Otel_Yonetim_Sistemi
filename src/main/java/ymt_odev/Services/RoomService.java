@@ -19,8 +19,8 @@ public class RoomService {
     /**
      * Müsait odaları arar
      */
-    public static List<Room> searchAvailableRooms(LocalDate checkIn, LocalDate checkOut,
-                                                   Integer guestCount, String roomType) {
+    public static List<Room> searchAvailableRooms(LocalDate checkIn, RoomState rState, LocalDate checkOut,
+                                                  Integer guestCount, String roomType) {
         List<Room> rooms = new ArrayList<>();
         DatabaseManager selector = new DBDataSelection();
 
@@ -44,7 +44,7 @@ public class RoomService {
                         continue;
                     }
                 }
-                if (!state.equalsIgnoreCase(RoomState.AVAILABLE.toString())) continue;
+                if (!state.equalsIgnoreCase(RoomState.AVAILABLE.toString()) && rState != null) continue;
 
                 Room room = new Room(
                         id,
@@ -209,7 +209,7 @@ public class RoomService {
      * Tüm odaları listeler
      */
     public static List<Room> getAllRooms() {
-        return searchAvailableRooms(null, null, null, null);
+        return searchAvailableRooms(null, null, null, null, null);
     }
 }
 
