@@ -39,7 +39,10 @@ JavaFX tabanlı bir otel rezervasyon ve yönetim uygulaması.
 - **State Pattern**: Oda durumları yönetimi
 - **Strategy Pattern**: Ödeme işlemleri
 - **Observer Pattern**: Bildirim sistemi
+- **Factory Method Pattern**: Ödeme stratejisi ve oda durumu nesnelerinin oluşturulması
 - **MVC Pattern**: Controller-View-Model ayrımı
+
+> **Detaylı Factory Pattern Dokümantasyonu:** [FACTORY_PATTERNS.md](FACTORY_PATTERNS.md) dosyasına bakın
 
 ## ⚙️ Kurulum ve Çalıştırma
 
