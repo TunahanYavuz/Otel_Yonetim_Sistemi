@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<VBox spacing="20" styleClass="dashboard-content" stylesheets="@style.css"
+      xmlns="http://javafx.com/javafx/21.0.5" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ymt_odev.Controllers.ReportsController">
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"/>
+    </padding>
+
+    <!-- Başlık -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Text text="📈" styleClass="hotel-icon" style="-fx-font-size: 32px;"/>
+        <Text text="Raporlar ve Analizler" styleClass="main-title"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Tarih Aralığı Seçimi -->
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="form-container">
+        <padding>
+            <Insets top="15" bottom="15" left="20" right="20"/>
+        </padding>
+
+        <VBox spacing="5">
+            <Text text="📅 Başlangıç Tarihi:" styleClass="info-text"/>
+            <DatePicker fx:id="startDatePicker" prefWidth="150"/>
+        </VBox>
+
+        <VBox spacing="5">
+            <Text text="📅 Bitiş Tarihi:" styleClass="info-text"/>
+            <DatePicker fx:id="endDatePicker" prefWidth="150"/>
+        </VBox>
+
+        <VBox spacing="5">
+            <Text text="📊 Rapor Tipi:" styleClass="info-text"/>
+            <ComboBox fx:id="reportTypeCombo" prefWidth="180">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Gelir Raporu"/>
+                        <String fx:value="Doluluk Raporu"/>
+                        <String fx:value="Müşteri Raporu"/>
+                        <String fx:value="Oda Performans"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+
+        <Button text="📊 Rapor Oluştur" styleClass="action-button" onAction="#generateReport">
+            <VBox.margin>
+                <Insets top="20"/>
+            </VBox.margin>
+        </Button>
+    </HBox>
+
+    <!-- Özet İstatistikler -->
+    <GridPane hgap="20" vgap="20">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/>
+            <ColumnConstraints percentWidth="25"/>
+        </columnConstraints>
+
+        <!-- Toplam Gelir -->
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" GridPane.columnIndex="0">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="💰" styleClass="stat-icon"/>
+            <Text text="Toplam Gelir" styleClass="stat-title"/>
+            <Text fx:id="totalRevenueText" text="₺0" styleClass="stat-number"/>
+            <Text text="Toplam" styleClass="info-detail"/>
+        </VBox>
+
+        <!-- Doluluk Oranı -->
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" GridPane.columnIndex="1">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="📊" styleClass="stat-icon"/>
+            <Text text="Doluluk Oranı" styleClass="stat-title"/>
+            <Text fx:id="occupancyRateText" text="0%" styleClass="stat-number"/>
+            <Text text="Anlık" styleClass="info-detail"/>
+        </VBox>
+
+        <!-- Toplam Rezervasyon -->
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" GridPane.columnIndex="2">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="📅" styleClass="stat-icon"/>
+            <Text text="Rezervasyon" styleClass="stat-title"/>
+            <Text fx:id="totalReservationsText" text="0" styleClass="stat-number"/>
+            <Text text="Toplam" styleClass="info-detail"/>
+        </VBox>
+
+        <!-- Müsait Oda -->
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" GridPane.columnIndex="3">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="🏨" styleClass="stat-icon"/>
+            <Text text="Müsait Oda" styleClass="stat-title"/>
+            <Text fx:id="availableRoomsText" text="0" styleClass="stat-number"/>
+            <Text text="Şu An" styleClass="info-detail"/>
+        </VBox>
+    </GridPane>
+
+    <!-- Rapor Sonucu -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS" styleClass="form-container">
+        <padding>
+            <Insets top="15" bottom="15" left="15" right="15"/>
+        </padding>
+
+        <Text text="📋 Rapor Sonuçları" styleClass="section-title"/>
+
+        <TextArea fx:id="reportResultArea"
+                  promptText="Rapor oluşturmak için yukarıdan tarih aralığı ve rapor tipi seçin, ardından 'Rapor Oluştur' butonuna tıklayın."
+                  wrapText="true"
+                  editable="false"
+                  VBox.vgrow="ALWAYS"
+                  styleClass="modern-textfield"
+                  style="-fx-font-family: 'Consolas', monospace;"/>
+    </VBox>
+
+</VBox>

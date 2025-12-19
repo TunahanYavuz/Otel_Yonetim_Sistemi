@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<ScrollPane fitToWidth="true" styleClass="scroll-pane" stylesheets="@style.css"
+      xmlns="http://javafx.com/javafx/21.0.5" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ymt_odev.Controllers.RoomManagementController">
+<VBox spacing="20" styleClass="dashboard-content">
+    <padding>
+        <Insets top="20" bottom="20" left="20" right="20"/>
+    </padding>
+
+    <!-- Başlık -->
+    <HBox alignment="CENTER_LEFT" spacing="15">
+        <Text text="🛏️" styleClass="hotel-icon" style="-fx-font-size: 32px;"/>
+        <Text text="Oda Yönetimi" styleClass="main-title"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="➕ Yeni Oda Ekle" styleClass="action-button" onAction="#addRoom"/>
+        <Button text="🏠 Ana Menü" styleClass="action-button" onAction="#goToMainMenu"
+                style="-fx-background-color: linear-gradient(to bottom, #95a5a6, #7f8c8d);"/>
+    </HBox>
+
+    <Separator/>
+
+    <!-- Filtre ve Arama -->
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="form-container">
+        <padding>
+            <Insets top="15" bottom="15" left="20" right="20"/>
+        </padding>
+
+        <VBox spacing="5">
+            <Text text="🔍 Oda No:" styleClass="info-text"/>
+            <TextField fx:id="roomNumberSearchField" promptText="Oda numarası..." prefWidth="120" styleClass="modern-textfield"/>
+        </VBox>
+
+        <VBox spacing="5">
+            <Text text="🏨 Oda Tipi:" styleClass="info-text"/>
+            <ComboBox fx:id="roomTypeCombo" prefWidth="150">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Tümü"/>
+                        <String fx:value="Standart"/>
+                        <String fx:value="Deluxe"/>
+                        <String fx:value="Suite"/>
+                        <String fx:value="Presidential"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+
+        <VBox spacing="5">
+            <Text text="📊 Durum:" styleClass="info-text"/>
+            <ComboBox fx:id="roomStatusFilter" prefWidth="150">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Tümü"/>
+                        <String fx:value="Müsait"/>
+                        <String fx:value="Dolu"/>
+                        <String fx:value="Temizlikte"/>
+                        <String fx:value="Bakımda"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+
+        <VBox spacing="5">
+            <Text text="🌊 Özellik:" styleClass="info-text"/>
+            <ComboBox fx:id="featureFilter" prefWidth="150">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Tümü"/>
+                        <String fx:value="Balkonlu"/>
+                        <String fx:value="Deniz Manzaralı"/>
+                        <String fx:value="Jakuzili"/>
+                        <String fx:value="Mutfaklı"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+
+        <Button text="🔍 Filtrele" styleClass="action-button" onAction="#filterRooms">
+            <VBox.margin>
+                <Insets top="20"/>
+            </VBox.margin>
+        </Button>
+    </HBox>
+
+    <!-- İstatistikler -->
+    <HBox spacing="20" alignment="CENTER">
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="🛏️" styleClass="stat-icon"/>
+            <Text text="Toplam Oda" styleClass="stat-title"/>
+            <Text fx:id="totalRoomsCount" text="0" styleClass="stat-number"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="✅" styleClass="stat-icon"/>
+            <Text text="Müsait Oda" styleClass="stat-title"/>
+            <Text fx:id="availableRoomsCount" text="0" styleClass="stat-number"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="🧹" styleClass="stat-icon"/>
+            <Text text="Temizlikte" styleClass="stat-title"/>
+            <Text fx:id="cleaningRoomsCount" text="0" styleClass="stat-number"/>
+        </VBox>
+
+        <VBox styleClass="stat-card" alignment="CENTER" spacing="10" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets top="20" bottom="20" left="30" right="30"/>
+            </padding>
+            <Text text="🔧" styleClass="stat-icon"/>
+            <Text text="Bakımda" styleClass="stat-title"/>
+            <Text fx:id="maintenanceRoomsCount" text="0" styleClass="stat-number"/>
+        </VBox>
+    </HBox>
+
+    <!-- Oda Listesi -->
+    <VBox spacing="10" VBox.vgrow="ALWAYS">
+        <Text text="📋 Oda Listesi" styleClass="section-title"/>
+
+        <TableView fx:id="roomResultsTable" styleClass="modern-table" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn text="Oda No" fx:id="roomNumberColumn"/>
+                <TableColumn text="Oda Tipi" fx:id="roomTypeColumn" prefWidth="120"/>
+                <TableColumn text="Kapasite" fx:id="capacityColumn" prefWidth="100"/>
+                <TableColumn text="Fiyat (₺/Gece)" fx:id="priceColumn" prefWidth="120"/>
+                <TableColumn text="Özellikler" fx:id="featuresColumn" prefWidth="200"/>
+                <TableColumn text="Durum" fx:id="roomStatusColumn" prefWidth="120"/>
+                <TableColumn text="İşlemler" fx:id="actionsColumn" prefWidth="180"/>
+            </columns>
+        </TableView>
+    </VBox>
+
+</VBox>
+</ScrollPane>

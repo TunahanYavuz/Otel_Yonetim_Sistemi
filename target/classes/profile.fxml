@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="700.0" prefWidth="900.0" styleClass="main-container"
+            stylesheets="@style.css" xmlns="http://javafx.com/javafx/21.0.5"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="ymt_odev.Controllers.ProfileController">
+
+    <BorderPane AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+
+        <!-- Üst Bar -->
+        <top>
+            <HBox styleClass="top-menu-bar" alignment="CENTER_LEFT" spacing="20">
+                <padding>
+                    <Insets top="15" bottom="15" left="30" right="30"/>
+                </padding>
+
+                <Button text="🏠 Ana Sayfa" onAction="#switchToMain" styleClass="secondary-button"/>
+                <Text text="👤 Kullanıcı Profili" styleClass="app-title" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button text="🚪 Çıkış" onAction="#handleLogout" styleClass="logout-button"/>
+            </HBox>
+        </top>
+
+        <!-- Ana İçerik -->
+        <center>
+            <ScrollPane fitToWidth="true">
+                <VBox spacing="25" styleClass="dashboard-content">
+                    <padding>
+                        <Insets top="30" bottom="30" left="40" right="40"/>
+                    </padding>
+
+                    <!-- Profil Bilgileri Kartı -->
+                    <VBox spacing="20" styleClass="form-container">
+                        <padding>
+                            <Insets top="30" bottom="30" left="40" right="40"/>
+                        </padding>
+
+                        <HBox spacing="20" alignment="CENTER_LEFT">
+                            <VBox alignment="CENTER" spacing="10">
+                                <Text text="👤" styleClass="hotel-icon" style="-fx-font-size: 64px;"/>
+                                <Text fx:id="userTypeLabel" text="Kullanıcı Rolü" styleClass="subtitle"/>
+                            </VBox>
+
+                            <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                <Text fx:id="userNameTitle" text="Kullanıcı Adı Soyadı" styleClass="main-title"/>
+                                <Text fx:id="userEmailTitle" text="email" styleClass="info-text"/>
+                                <Text fx:id="memberSinceTitle" text="Üye olma tarihi" styleClass="info-detail"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Kişisel Bilgiler -->
+                    <VBox spacing="20" styleClass="form-container">
+                        <padding>
+                            <Insets top="25" bottom="25" left="30" right="30"/>
+                        </padding>
+
+                        <Text text="📝 Kişisel Bilgiler" styleClass="section-title"/>
+
+                        <GridPane hgap="20" vgap="15" maxWidth="600">
+                            <columnConstraints>
+                                <ColumnConstraints minWidth="120" prefWidth="120"/>
+                                <ColumnConstraints minWidth="200" hgrow="ALWAYS"/>
+                            </columnConstraints>
+
+                            <Text text="Ad:" styleClass="info-text" GridPane.rowIndex="0"/>
+                            <TextField fx:id="firstNameField" text="Ad" styleClass="modern-textfield"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                            <Text text="Soyad:" styleClass="info-text" GridPane.rowIndex="1"/>
+                            <TextField fx:id="lastNameField" text="Soyad" styleClass="modern-textfield"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                            <Text text="E-posta:" styleClass="info-text" GridPane.rowIndex="2"/>
+                            <TextField fx:id="emailField" text="email" styleClass="modern-textfield"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                            <Text text="Telefon:" styleClass="info-text" GridPane.rowIndex="3"/>
+                            <TextField fx:id="phoneField" text="telefon numarası" styleClass="modern-textfield"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                            <Text text="TC Kimlik:" styleClass="info-text" GridPane.rowIndex="4"/>
+                            <TextField fx:id="tcField" text="tckimlik" styleClass="modern-textfield"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                        </GridPane>
+
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                            <Button text="💾 Kaydet" onAction="#saveProfile" styleClass="primary-button" prefWidth="120"/>
+                            <Button text="🔄 Geri Al" onAction="#resetProfile" styleClass="secondary-button" prefWidth="120"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Müşteri İstatistikleri (Sadece müşteriler için) -->
+                    <VBox fx:id="customerStatsSection" spacing="20" styleClass="form-container">
+                        <padding>
+                            <Insets top="25" bottom="25" left="30" right="30"/>
+                        </padding>
+
+                        <Text text="📊 Hesap İstatistikleri" styleClass="section-title"/>
+
+                        <HBox spacing="30" alignment="CENTER">
+                            <VBox styleClass="stat-card" alignment="CENTER" spacing="8">
+                                <padding>
+                                    <Insets top="15" bottom="15" left="25" right="25"/>
+                                </padding>
+                                <Text text="📅" styleClass="stat-icon"/>
+                                <Text text="Toplam Rezervasyon" styleClass="stat-title"/>
+                                <Text fx:id="totalReservationsText" text="Toplam Rezervasyon" styleClass="stat-number"/>
+                            </VBox>
+
+                            <VBox styleClass="stat-card" alignment="CENTER" spacing="8">
+                                <padding>
+                                    <Insets top="15" bottom="15" left="25" right="25"/>
+                                </padding>
+                                <Text text="🏆" styleClass="stat-icon"/>
+                                <Text text="Sadakat Seviyesi" styleClass="stat-title"/>
+                                <Text fx:id="loyaltyLevelText" text="Sadakat Seviyesi" styleClass="stat-number" style="-fx-fill: #FFD700;"/>
+                            </VBox>
+
+                            <VBox styleClass="stat-card" alignment="CENTER" spacing="8">
+                                <padding>
+                                    <Insets top="15" bottom="15" left="25" right="25"/>
+                                </padding>
+                                <Text text="💰" styleClass="stat-icon"/>
+                                <Text text="Toplam Harcama" styleClass="stat-title"/>
+                                <Text fx:id="totalSpentText" text="Toplam harcama" styleClass="stat-number"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Güvenlik Ayarları -->
+                    <VBox spacing="20" styleClass="form-container">
+                        <padding>
+                            <Insets top="25" bottom="25" left="30" right="30"/>
+                        </padding>
+
+                        <Text text="🔒 Güvenlik Ayarları" styleClass="section-title"/>
+
+                        <VBox spacing="15" maxWidth="400">
+                            <Button text="🔑 Şifre Değiştir" onAction="#showChangePassword"
+                                   styleClass="action-button" prefWidth="200"/>
+
+                            <Button text="📱 İki Faktörlü Doğrulama" onAction="#setupTwoFactor"
+                                   styleClass="action-button" prefWidth="200"/>
+
+                            <Button text="📋 Oturum Geçmişi" onAction="#showSessionHistory"
+                                   styleClass="action-button" prefWidth="200"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Hesap İşlemleri -->
+                    <VBox spacing="20" styleClass="form-container">
+                        <padding>
+                            <Insets top="25" bottom="25" left="30" right="30"/>
+                        </padding>
+
+                        <Text text="⚙️ Hesap İşlemleri" styleClass="section-title"/>
+
+                        <HBox spacing="15">
+                            <Button text="📤 Veri Dışa Aktar" onAction="#exportData"
+                                   styleClass="secondary-button" prefWidth="150"/>
+                            <Button text="🗑️ Hesabı Sil" onAction="#deleteAccount"
+                                   styleClass="secondary-button" prefWidth="120"
+                                   style="-fx-background-color: #F44336; -fx-text-fill: white;"/>
+                        </HBox>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+        </center>
+
+    </BorderPane>
+</AnchorPane>

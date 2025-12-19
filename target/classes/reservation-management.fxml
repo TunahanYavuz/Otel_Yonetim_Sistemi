@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ymt_odev.Controllers.ReservationsController">
+
+    <BorderPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <!-- Üst Bar -->
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-menu-bar">
+                <padding>
+                    <Insets bottom="15" left="30" right="30" top="15" />
+                </padding>
+
+                <Button onAction="#switchToMain" styleClass="secondary-button" text="🏠 Ana Sayfa" />
+                <Text styleClass="app-title" text="📋 Rezervasyon Yönetimi" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button onAction="#showNewReservation" styleClass="primary-button" text="➕ Yeni Rezervasyon" />
+                <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Çıkış" />
+            </HBox>
+        </top>
+
+        <!-- Ana İçerik - ScrollPane ile sarılmış -->
+        <center>
+            <ScrollPane fitToWidth="true" styleClass="scroll-pane">
+                <VBox spacing="20">
+                    <padding>
+                        <Insets bottom="20" left="30" right="30" top="20" />
+                    </padding>
+
+                    <!-- Filtre Paneli -->
+                    <HBox alignment="CENTER_LEFT" spacing="20" styleClass="form-container">
+                        <padding>
+                            <Insets bottom="15" left="25" right="25" top="15" />
+                        </padding>
+
+                        <Text styleClass="info-text" text="🔍 Filtrele:" />
+
+                        <ComboBox fx:id="reservationStatusFilter" prefWidth="140" value="Tüm Durumlar" />
+
+                        <DatePicker fx:id="filterStartDate" promptText="Başlangıç Tarihi" />
+                        <DatePicker fx:id="filterEndDate" promptText="Bitiş Tarihi" />
+
+                        <TextField fx:id="customerSearchField" prefWidth="150" promptText="Müşteri Ara..." />
+
+                        <Button onAction="#filterReservations" styleClass="action-button" text="🔍 Filtrele" />
+                        <Button onAction="#clearFilters" styleClass="secondary-button" text="🔄 Temizle" />
+                    </HBox>
+
+                    <!-- Rezervasyon Tablosu -->
+                    <TableView fx:id="reservationsTable" prefHeight="350" styleClass="modern-table" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="reservationIdColumn" prefWidth="120" text="Rezervasyon No" />
+                            <TableColumn fx:id="customerNameColumn" prefWidth="150" text="Müşteri" />
+                            <TableColumn fx:id="roomNumberColumn" text="Oda" />
+                            <TableColumn fx:id="checkInColumn" prefWidth="100" text="Giriş Tarihi" />
+                            <TableColumn fx:id="checkOutColumn" prefWidth="100" text="Çıkış Tarihi" />
+                            <TableColumn fx:id="guestCountColumn" text="Kişi Sayısı" />
+                            <TableColumn fx:id="totalPriceColumn" prefWidth="100" text="Toplam Fiyat" />
+                            <TableColumn fx:id="statusColumn" prefWidth="100" text="Durum" />
+                            <TableColumn fx:id="actionsColumn" prefWidth="200" text="İşlemler" />
+                        </columns>
+                    </TableView>
+
+                    <!-- Alt Panel - Seçili Rezervasyon Detayları -->
+                    <VBox fx:id="reservationDetailsPanel" spacing="15" styleClass="form-container" visible="false">
+                        <padding>
+                            <Insets bottom="20" left="25" right="25" top="20" />
+                        </padding>
+
+                        <Text styleClass="section-title" text="📋 Rezervasyon Detayları" />
+
+                        <HBox spacing="40">
+                            <!-- Sol Kolon -->
+                            <VBox spacing="10">
+                                <Text styleClass="info-text" text="Rezervasyon Bilgileri:" />
+                                <Text fx:id="detailReservationId" text="-" />
+                                <Text fx:id="detailCustomerName" text="-" />
+                                <Text fx:id="detailRoomInfo" text="-" />
+                                <Text fx:id="detailDates" text="-" />
+                                <Text fx:id="detailGuestCount" text="-" />
+                            </VBox>
+
+                            <!-- Orta Kolon -->
+                            <VBox spacing="10">
+                                <Text styleClass="info-text" text="Ödeme Bilgileri:" />
+                                <Text fx:id="detailTotalPrice" text="-" />
+                                <Text fx:id="detailDepositAmount" text="-" />
+                                <Text fx:id="detailRemainingAmount" text="-" />
+                                <Text fx:id="detailPaymentMethod" text="-" />
+                                <Text fx:id="detailPaymentStatus" text="-" />
+                            </VBox>
+
+                            <!-- Sağ Kolon - İşlemler -->
+                            <VBox alignment="TOP_RIGHT" spacing="10">
+                                <Text styleClass="info-text" text="Hızlı İşlemler:" />
+                                <Button fx:id="checkInButton" onAction="#performCheckIn" prefWidth="140" styleClass="action-button" text="✅ Check-in Yap" />
+                                <Button fx:id="checkOutButton" onAction="#performCheckOut" prefWidth="140" styleClass="action-button" text="🚪 Check-out Yap" />
+                                <Button fx:id="cancelButton" onAction="#cancelReservation" prefWidth="140" styleClass="secondary-button" text="❌ İptal Et" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Özel İstekler ve Notlar -->
+                        <VBox spacing="10">
+                            <Text styleClass="info-text" text="📝 Özel İstekler ve Notlar:" />
+                            <TextArea fx:id="specialRequestsArea" editable="false" prefRowCount="3" styleClass="modern-textfield" text="" />
+                        </VBox>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+        </center>
+
+        <!-- Alt Durum Bar -->
+        <bottom>
+            <HBox alignment="CENTER_LEFT" spacing="20" styleClass="status-bar">
+                <padding>
+                    <Insets bottom="10" left="30" right="30" top="10" />
+                </padding>
+
+                <Text fx:id="reservationCountText" styleClass="status-text" />
+                <Separator orientation="VERTICAL" />
+                <Text fx:id="selectedReservationText" styleClass="status-text" />
+
+                <Region HBox.hgrow="ALWAYS" />
+            </HBox>
+        </bottom>
+
+    </BorderPane>
+</AnchorPane>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import java.lang.String?>
+
+<AnchorPane prefHeight="700.0" prefWidth="1000.0" styleClass="main-container" stylesheets="@style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ymt_odev.Controllers.RoomSearchController">
+
+    <!-- Ana Layout -->
+    <BorderPane AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <!-- Üst Başlık Bar -->
+        <top>
+            <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-menu-bar">
+                <padding>
+                    <Insets bottom="15" left="30" right="30" top="15" />
+                </padding>
+
+                <Button onAction="#switchToMain" styleClass="secondary-button" text="🏠 Ana Sayfa" />
+                <Text styleClass="app-title" text="🔍 Oda Arama ve Rezervasyon" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button onAction="#handleLogout" styleClass="logout-button" text="🚪 Çıkış" />
+            </HBox>
+        </top>
+
+        <!-- Merkezi İçerik -->
+        <center>
+            <ScrollPane fitToHeight="true" fitToWidth="true">
+                <VBox spacing="30" styleClass="dashboard-content">
+                    <padding>
+                        <Insets bottom="30" left="40" right="40" top="30" />
+                    </padding>
+
+                    <!-- Arama Formu -->
+                    <VBox spacing="20" styleClass="form-container">
+                        <padding>
+                            <Insets bottom="25" left="30" right="30" top="25" />
+                        </padding>
+
+                        <Text styleClass="section-title" text="🔍 Oda Arama Kriterleri" />
+
+                        <!-- Müşteri Seçimi - Personel/Admin için görünür -->
+                        <VBox fx:id="customerSelectionSection" spacing="10" visible="false" managed="false">
+                            <Text styleClass="info-text" text="👤 Müşteri Seçimi (Personel/Admin):" />
+                            <HBox alignment="CENTER_LEFT" spacing="15">
+                                <TextField fx:id="customerSearchField" prefWidth="250" promptText="Müşteri adı, email veya TC girin..." styleClass="modern-textfield" />
+                                <Button onAction="#searchCustomer" styleClass="action-button" text="🔍 Müşteri Ara" />
+                                <ComboBox fx:id="customerComboBox" prefWidth="300" promptText="Müşteri seçin..." styleClass="modern-textfield" />
+                            </HBox>
+                        </VBox>
+
+                        <!-- Tarih Seçimi -->
+                        <HBox alignment="CENTER_LEFT" spacing="20">
+                            <VBox spacing="8">
+                                <Text styleClass="info-text" text="📅 Giriş Tarihi:" />
+                                <DatePicker fx:id="checkInDatePicker" prefWidth="150" styleClass="modern-textfield" />
+                            </VBox>
+
+                            <VBox spacing="8">
+                                <Text styleClass="info-text" text="📅 Çıkış Tarihi:" />
+                                <DatePicker fx:id="checkOutDatePicker" prefWidth="150" styleClass="modern-textfield" />
+                            </VBox>
+
+                            <VBox spacing="8">
+                                <Text styleClass="info-text" text="👥 Kişi Sayısı:" />
+                                <Spinner fx:id="guestCountSpinner" initialValue="2" max="10" min="1" prefWidth="100" styleClass="modern-textfield" />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Oda Tipi ve Özellikler -->
+                        <HBox alignment="CENTER_LEFT" spacing="30">
+                            <VBox spacing="10">
+                                <Text styleClass="info-text" text="🛏️ Oda Tipi:" />
+                                <ComboBox fx:id="roomTypeCombo" prefWidth="200" styleClass="modern-textfield" value="Tümü" />
+                            </VBox>
+
+                            <VBox spacing="10">
+                                <Text styleClass="info-text" text="✨ Özellikler:" />
+                                <HBox spacing="15">
+                                    <CheckBox fx:id="balconyCheck" styleClass="checkbox-label" text="🌅 Balkon" />
+                                    <CheckBox fx:id="seaViewCheck" styleClass="checkbox-label" text="🌊 Deniz Manzarası" />
+                                    <CheckBox fx:id="jacuzziCheck" styleClass="checkbox-label" text="🛁 Jacuzzi" />
+                                    <CheckBox fx:id="kitchenCheck" styleClass="checkbox-label" text="🍳 Mutfak" />
+                                </HBox>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Arama Butonu -->
+                        <HBox alignment="CENTER" spacing="20">
+                            <Button onAction="#searchRooms" prefWidth="150" styleClass="primary-button" text="🔍 Oda Ara" />
+                            <Button onAction="#clearSearchForm" prefWidth="120" styleClass="secondary-button" text="🔄 Temizle" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Arama Sonuçları -->
+                    <VBox fx:id="searchResultsSection" spacing="15" visible="false">
+                        <Text styleClass="section-title" text="🏨 Arama Sonuçları" />
+
+                        <!-- Sonuç Tablosu -->
+                        <TableView fx:id="roomResultsTable" fixedCellSize="50.0" minHeight="-Infinity" prefHeight="300" styleClass="modern-table">
+                            <columns>
+                                <TableColumn fx:id="roomNumberColumn" text="Oda No" />
+                                <TableColumn fx:id="roomTypeColumn" prefWidth="120" text="Oda Tipi" />
+                                <TableColumn fx:id="capacityColumn" text="Kapasite" />
+                                <TableColumn fx:id="priceColumn" prefWidth="100" text="Fiyat/Gece" />
+                                <TableColumn fx:id="featuresColumn" prefWidth="200" text="Özellikler" />
+                                <TableColumn fx:id="statusColumn" prefWidth="100" text="Durum" />
+                                <TableColumn fx:id="actionsColumn" prefWidth="120" text="İşlemler" />
+                            </columns>
+                        </TableView>
+
+                        <!-- Seçili Oda Bilgisi -->
+                        <VBox fx:id="selectedRoomDetails" spacing="15" styleClass="form-container" visible="false">
+                            <padding>
+                                <Insets bottom="20" left="25" right="25" top="20" />
+                            </padding>
+
+                            <Text styleClass="section-title" text="🛏️ Seçili Oda Detayları" />
+
+                            <HBox spacing="30">
+                                <VBox spacing="10">
+                                    <Text fx:id="selectedRoomInfo" styleClass="info-text" text="Oda: 101 - Deluxe (2 kişilik)" />
+                                    <Text fx:id="selectedRoomPrice" styleClass="info-text" text="Fiyat: 1,500 TL/gece" />
+                                    <Text fx:id="selectedRoomFeatures" styleClass="info-detail" text="Özellikler: Wi-Fi, Klima, TV, Jacuzzi, Balkon" />
+                                </VBox>
+
+                                <Region HBox.hgrow="ALWAYS" />
+
+                                <VBox alignment="CENTER_RIGHT" spacing="10">
+                                    <Text fx:id="totalPriceText" styleClass="section-title" text="Toplam: 4,500 TL (3 gece)" />
+                                </VBox>
+                            </HBox>
+
+                            <Separator/>
+
+                            <!-- Ödeme ve Not Bilgileri -->
+                            <HBox spacing="30" alignment="CENTER_LEFT">
+                                <VBox spacing="8">
+                                    <Text styleClass="info-text" text="💳 Ödeme Yöntemi:" />
+                                    <ComboBox fx:id="paymentMethodCombo" prefWidth="180" styleClass="modern-textfield">
+                                        <items>
+                                            <FXCollections fx:factory="observableArrayList">
+                                                <String fx:value="Kredi Kartı"/>
+                                                <String fx:value="Nakit"/>
+                                                <String fx:value="Havale"/>
+                                                <String fx:value="Online Ödeme"/>
+                                            </FXCollections>
+                                        </items>
+                                    </ComboBox>
+                                </VBox>
+
+                                <VBox spacing="8" HBox.hgrow="ALWAYS">
+                                    <Text styleClass="info-text" text="📝 Özel İstekler / Notlar:" />
+                                    <TextArea fx:id="specialRequestsArea" prefRowCount="2" prefWidth="400"
+                                              promptText="Özel isteklerinizi buraya yazabilirsiniz..."
+                                              styleClass="modern-textfield"/>
+                                </VBox>
+                            </HBox>
+
+                            <!-- Rezervasyon Butonu -->
+                            <HBox alignment="CENTER_RIGHT" spacing="15">
+                                <Button onAction="#clearSelection" prefWidth="120" styleClass="secondary-button" text="❌ İptal" />
+                                <Button onAction="#makeReservation" prefWidth="180" styleClass="primary-button" text="📋 Rezervasyon Yap" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                </VBox>
+            </ScrollPane>
+        </center>
+
+    </BorderPane>
+</AnchorPane>
